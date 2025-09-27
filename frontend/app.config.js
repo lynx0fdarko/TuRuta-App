@@ -2,18 +2,22 @@ import 'dotenv/config'
 
 export default {
   expo: {
-    name: 'frontend',
-    slug: 'frontend',
+    name: 'EnRuta',
+    slug: 'enruta',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'frontend',
+    scheme: 'enruta',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
       config: {
         googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_IOS_KEY,
+      },
+      infoPlist: {
+        NSLocationWhenInUseUsageDescription:
+          'Usamos tu ubicación para mostrar paradas cercanas y tiempos estimados.',
       },
     },
     android: {
@@ -30,6 +34,10 @@ export default {
           apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_ANDROID_KEY,
         },
       },
+      permissions: [
+        'ACCESS_FINE_LOCATION',
+        'ACCESS_COARSE_LOCATION',
+      ],
     },
     web: {
       output: 'static',
