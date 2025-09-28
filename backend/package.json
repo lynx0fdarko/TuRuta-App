@@ -2,8 +2,14 @@
   "name": "tutruta-backend",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
-    "start": "node api/hello.js"
+    "start": "node api/health.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "node-fetch": "^3.3.2",
+    "supabase": "^2.45.5"
   }
 }
