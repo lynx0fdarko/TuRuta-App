@@ -61,21 +61,21 @@ export default function FloatingBar() {
 const styles = StyleSheet.create({
   wrap: {
     position: 'absolute',
-    left: 16,
-    right: 16,
+    left: 0,
+    right: 0,
     alignItems: 'center',
   },
   glass: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '100%',
-    paddingVertical: 12,
+    width: '65%',
+    paddingVertical: 16,
     paddingHorizontal: 18,
-    borderRadius: 40,
-    backgroundColor: 'rgba(255,255,255,0.85)', // fallback si blur falla
+    borderRadius: 9999,
+    backgroundColor: colors.primary, // fallback si blur falla
     shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 6 },
     shadowRadius: 12,
     elevation: 6,
   },
