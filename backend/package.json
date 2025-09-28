@@ -8,8 +8,7 @@
     "start": "node api/health.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.7",
-    "node-fetch": "^3.3.2",
-    "supabase": "^2.45.5"
+    "@supabase/supabase-js": "^2.58.0",
+    "node-fetch": "^3.3.2"
   }
 }
