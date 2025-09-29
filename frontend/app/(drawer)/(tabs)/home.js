@@ -5,7 +5,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
+
 import GlassBox from '../../../components/GlassBox'
+import AvatarButton from '../../../components/AvatarButton'
 import { colors } from '../../../styles/colors'
 import { typography } from '../../../styles/typography'
 
@@ -15,8 +17,7 @@ const SEARCH_BOTTOM = Math.round(WIN_H * COLLAPSED_PERCENT) + 12
 
 export default function Home() {
   const router = useRouter()
-  const insets = useSafeAreaInsets()              // 👈 usar dentro del componente
-
+  const insets = useSafeAreaInsets()
   const bottomSheetRef = useRef(null)
   const snapPoints = useMemo(() => ['40%', '75%'], [])
 
@@ -45,19 +46,20 @@ export default function Home() {
       />
 
       <SafeAreaView style={{ flex: 1 }}>
-        {/* Avatar: absoluto arriba-izquierda (encima de todo) */}
-        <View style={[styles.headerRow, { top: insets.top + 4 }]}>
-          <TouchableOpacity
-            style={styles.avatarBtn}
-            activeOpacity={0.8}
-            onPress={() => router.push('/(drawer)/profile')}
-            accessibilityRole="button"
-            accessibilityLabel="Abrir perfil"
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <MaterialCommunityIcons name="account" size={28} color={colors.iconOnBlue} />
-          </TouchableOpacity>
-        </View>
+        {/* Avatar (foto de perfil botón) */}
+        <AvatarButton
+          uri={null /* ← aquí pon la URL del avatar cuando la tengas */}
+          size={56}
+          onPress={() => router.push('/(drawer)/profile')}
+          containerStyle={{
+            position: 'absolute',
+            left: 16,
+            top: insets.top + 4,
+            zIndex: 100,
+          }}
+          // onPress opcional; por defecto abre /(drawer)/profile
+          // onPress={() => router.push('/(drawer)/profile')}
+        />
 
         {/* Buscador ANCLADO al borde superior del sheet */}
         <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
@@ -95,7 +97,7 @@ export default function Home() {
           backdropComponent={(props) => (
             <BottomSheetBackdrop
               {...props}
-              appearsOnIndex={1}      // no bloquea el buscador en 40%
+              appearsOnIndex={1}
               disappearsOnIndex={-1}
               opacity={0.45}
               pressBehavior="collapse"
@@ -217,18 +219,6 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  headerRow: {
-    position: 'absolute',
-    left: 16,
-    zIndex: 100,
-  },
-  avatarBtn: {
-    width: 52, height: 52, borderRadius: 26,
-    backgroundColor: 'rgba(255,255,255,0.14)',
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: colors.border,
-  },
-
   // Buscador anclado arriba del sheet
   searchAnchor: {
     position: 'absolute',

@@ -1,16 +1,23 @@
 // styles/colors.js
-export const colors = {
-  // Mantengo tus claves
-  primary:   '#8EB7FF',       // acento suave para iconos/acciones
-  secondary: '#2D3B63',
-  background:'#23315C',       // fondo base (si no hay gradiente)
-  text:      '#E6F0FF',       // texto principal claro
-  border:    'rgba(255,255,255,0.12)',
-  danger:    '#D9534F',
-  success:   '#28A745',
-  info:      '#17A2B8',
+// Define la paleta de colores global de la app.
+// Aquí cambias un color y se refleja en toda la aplicación.
 
-  // Nuevas (mock)
+import { getColorVariations } from './colorUtils'
+
+// Colores base
+const baseColors = {
+  primary: 'rgba(62, 146, 207, 1)',   // botones, títulos
+  secondary: '#282a61',               // botón invitado, textos secundarios
+  background: '#c5ccd1',              // Fondo general
+  text: '#000',                       // Texto normal
+  border: '#11101049',                // Bordes de inputs, tarjetas
+  danger: '#d9534f',                  // errores/alertas
+  success: '#28a745',                 // mensajes de éxito
+  info: '#17a2b8',                    // información
+  white: '#FFFFFF',                  // blanco puro
+  black: '#000000',
+
+   // Nuevas (mock)
   bgStart:   '#6A8DF8',       // degradado arriba
   bgEnd:     '#23315C',       // degradado abajo
   textSoft:  '#C7D2FE',       // subtítulos/fechas
@@ -27,3 +34,28 @@ export const colors = {
   handle:      '#7F90B7',                // barrita del sheet
   iconOnBlue:  '#C9D6FF',                // iconos sobre azul
 }
+
+// Generar variaciones automáticamente
+export const colors = {
+  ...baseColors,
+  // Variaciones del color primario
+  primaryDark: getColorVariations(baseColors.primary).dark,
+  primaryDarker: getColorVariations(baseColors.primary).darker,
+  primaryLight: getColorVariations(baseColors.primary).light,
+  primaryLighter: getColorVariations(baseColors.primary).lighter,
+  primaryHover: getColorVariations(baseColors.primary).hover,
+  primaryPressed: getColorVariations(baseColors.primary).pressed,
+  
+  // Variaciones del color secundario
+  secondaryDark: getColorVariations(baseColors.secondary).dark,
+  secondaryLight: getColorVariations(baseColors.secondary).light,
+  secondaryHover: getColorVariations(baseColors.secondary).hover,
+  
+  // Variaciones de colores de estado
+  dangerDark: getColorVariations(baseColors.danger).dark,
+  successDark: getColorVariations(baseColors.success).dark,
+  infoDark: getColorVariations(baseColors.info).dark,
+}
+
+
+// #282a61 #eade59 #3e92cf #c5ccd1

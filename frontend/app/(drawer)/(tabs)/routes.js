@@ -1,9 +1,11 @@
 // app/(drawer)/(tabs)/routes.js
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useRouter } from 'expo-router'                 // 👈 importar
 import GlassBox from '../../../components/GlassBox'
+import AvatarButton from '../../../components/AvatarButton'
 import { colors } from '../../../styles/colors'
 
 const DATA = [
@@ -34,13 +36,19 @@ const DATA = [
 ]
 
 export default function RoutesScreen() {
+  const insets = useSafeAreaInsets()
+  const router = useRouter()                            // 👈 crear instancia
+
   return (
     <SafeAreaView style={styles.safe}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity activeOpacity={0.85} style={styles.avatar}>
-          <MaterialCommunityIcons name="account" size={28} color="#FFFFFF" />
-        </TouchableOpacity>
+        <AvatarButton
+          size={56}
+          uri={null} // pasa la URL real si la tenés
+          onPress={() => router.push('/(drawer)/profile')}   // 👈 usar router aquí
+          containerStyle={{ marginTop: insets.top }}
+        />
 
         <GlassBox radius={18} padding={14} shadow={false} style={styles.headerPill}>
           <Text style={styles.headerTitle}>El dorado ➜ Los Robles</Text>
@@ -56,7 +64,6 @@ export default function RoutesScreen() {
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
         {DATA.map((item) => (
           <View key={item.id} style={styles.cardWrap}>
-            {/* Fila superior: badge de número + botón circular */}
             <View style={styles.rowTop}>
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{item.id}</Text>
@@ -66,7 +73,6 @@ export default function RoutesScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* Tarjeta azul con info */}
             <GlassBox radius={18} padding={14} shadow={Platform.OS === 'android'} style={styles.infoBox}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.routeTitle} numberOfLines={2}>{item.title}</Text>
@@ -86,7 +92,7 @@ export default function RoutesScreen() {
   )
 }
 
-/** Colores base del mock amarillo + azul */
+/** Colores base del mock */
 const YELLOW = '#F4E791'
 const YELLOW_DEEP = '#E6DA7F'
 const BLUE_CARD = '#4B87B0'
@@ -94,7 +100,6 @@ const BLUE_CARD = '#4B87B0'
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: YELLOW },
 
-  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -102,18 +107,9 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     gap: 12,
   },
-  avatar: {
-    width: 56, height: 56, borderRadius: 28,
-    backgroundColor: '#9EC3C7',
-    alignItems: 'center', justifyContent: 'center',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
-      android: { elevation: 6 },
-    }),
-  },
   headerPill: {
     flex: 1,
-    backgroundColor: '#C8D6C4' + '66', // leve tinte dentro del Glass
+    backgroundColor: '#C8D6C4' + '66',
   },
   headerTitle: {
     color: '#FFFFFF',
@@ -137,7 +133,6 @@ const styles = StyleSheet.create({
     }),
   },
 
-  // Tarjetas
   cardWrap: {
     backgroundColor: YELLOW_DEEP,
     borderRadius: 26,
@@ -148,12 +143,7 @@ const styles = StyleSheet.create({
       android: { elevation: 3 },
     }),
   },
-  rowTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    gap: 10,
-  },
+  rowTop: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 10 },
   badge: {
     backgroundColor: '#E7EDC9',
     paddingHorizontal: 14,
@@ -162,38 +152,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: {
-    color: '#4B5A43',
-    fontWeight: '900',
-    fontSize: 16,
-  },
+  badgeText: { color: '#4B5A43', fontWeight: '900', fontSize: 16 },
   badgeRound: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 36, height: 36, borderRadius: 18,
     backgroundColor: '#E7EDC9',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
   },
-
-  infoBox: {
-    backgroundColor: BLUE_CARD + 'D6', // azul con alfa
-  },
-  routeTitle: {
-    color: '#10324A',
-    fontSize: 16,
-    fontWeight: '800',
-    marginBottom: 6,
-  },
-  routePath: {
-    color: '#10324A',
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  more: {
-    color: '#0B2C6E',
-    fontWeight: '900',
-  },
+  infoBox: { backgroundColor: BLUE_CARD + 'D6' },
+  routeTitle: { color: '#10324A', fontSize: 16, fontWeight: '800', marginBottom: 6 },
+  routePath: { color: '#10324A', fontSize: 13, lineHeight: 18 },
+  more: { color: '#0B2C6E', fontWeight: '900' },
   airBtn: {
     marginLeft: 10,
     alignSelf: 'center',

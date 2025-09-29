@@ -1,26 +1,29 @@
 // app/(drawer)/profile/index.js
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Linking, Alert, Platform, Image } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useRouter } from 'expo-router'
+import GlassBox from '../../../components/GlassBox'
 import { colors } from '../../../styles/colors'
-// ⬇️ Si usas Supabase para auth/perfil, descomenta esto:
-// import { supabase } from '../../../lib/supabase'
+// import { supabase } from '../../../lib/supabase' // ← descomenta si usarás Supabase
 
 export default function ProfileScreen() {
   const router = useRouter()
-  // Mock inicial; luego puedes cargar de Supabase
+  const insets = useSafeAreaInsets()
+
+  // Mock inicial; reemplaza con tu data real
   const [profile, setProfile] = useState({
     name: 'Usuario EnRuta',
     email: 'usuario@enruta.com',
     phone: '+505 8888 8888',
-    avatarUrl: null, // URL de imagen si tienes
+    avatarUrl: null, // URL de foto; si es null mostramos ícono
   })
 
   // Ejemplo de carga desde Supabase (opcional)
   // useEffect(() => {
-  //   (async () => {
+  //   ;(async () => {
   //     const { data: { user } } = await supabase.auth.getUser()
   //     if (!user) return
   //     const { data, error } = await supabase
@@ -49,91 +52,140 @@ export default function ProfileScreen() {
     Linking.openURL(`mailto:${profile.email}`)
   }
 
+  const edit = () => {
+    // Crea luego app/(drawer)/profile/edit.js si quieres edición real
+    Alert.alert('Editar', 'Aquí abrirías la pantalla para editar el perfil.')
+    // router.push('/(drawer)/profile/edit')
+  }
+
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* Header simple */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.circleBtn}>
-          <MaterialCommunityIcons name="chevron-left" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Perfil</Text>
-        <View style={{ width: 40 }} />
-      </View>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      {/* Fondo en degradado, como Home */}
+      <LinearGradient
+        colors={[colors.bgStart, colors.bgEnd]}
+        start={{ x: 0.1, y: 0.0 }}
+        end={{ x: 1.0, y: 1.0 }}
+        style={StyleSheet.absoluteFill}
+      />
 
-      {/* Card principal */}
-      <View style={styles.card}>
-        <View style={styles.avatarWrap}>
-          {profile.avatarUrl ? (
-            <Image source={{ uri: profile.avatarUrl }} style={styles.avatarImg} />
-          ) : (
-            <MaterialCommunityIcons name="account" size={42} color="#fff" />
-          )}
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* Header */}
+        <View style={[styles.header, { paddingTop: Math.max(insets.top, 8) }]}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.circleBtn} accessibilityLabel="Volver">
+            <MaterialCommunityIcons name="chevron-left" size={24} color={colors.white} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Perfil</Text>
+          {/* Espaciador para equilibrar el layout */}
+          <View style={{ width: 40 }} />
         </View>
 
-        <Text style={styles.name}>{profile.name}</Text>
-        {!!profile.email && <Text style={styles.secondary}>{profile.email}</Text>}
-        {!!profile.phone && <Text style={styles.secondary}>{profile.phone}</Text>}
+        {/* Card principal con efecto vidrio */}
+        <View style={styles.content}>
+          <GlassBox radius={18} padding={20} intensity={Platform.OS === 'android' ? 40 : 32} shadow style={styles.card}>
+            <View style={styles.avatarWrap}>
+              {profile.avatarUrl ? (
+                <Image source={{ uri: profile.avatarUrl }} style={styles.avatarImg} />
+              ) : (
+                <View style={styles.avatarFallback}>
+                  <MaterialCommunityIcons name="account" size={42} color={colors.white} />
+                </View>
+              )}
+            </View>
 
-        <View style={styles.actions}>
-          <TouchableOpacity style={styles.actionBtn} onPress={call}>
-            <MaterialCommunityIcons name="phone" size={20} color="#1C325B" />
-            <Text style={styles.actionText}>Llamar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn} onPress={mail}>
-            <MaterialCommunityIcons name="email" size={20} color="#1C325B" />
-            <Text style={styles.actionText}>Correo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionBtn}
-            onPress={() => Alert.alert('Editar', 'Aquí abrirías la edición del perfil.')}
-          >
-            <MaterialCommunityIcons name="pencil" size={20} color="#1C325B" />
-            <Text style={styles.actionText}>Editar</Text>
-          </TouchableOpacity>
+            <Text style={styles.name} numberOfLines={1}>{profile.name}</Text>
+            {!!profile.email && <Text style={styles.secondary}>{profile.email}</Text>}
+            {!!profile.phone && <Text style={styles.secondary}>{profile.phone}</Text>}
+
+            {/* Acciones */}
+            <View style={styles.actions}>
+              <TouchableOpacity style={styles.actionBtn} onPress={call}>
+                <MaterialCommunityIcons name="phone" size={20} color="#1C325B" />
+                <Text style={styles.actionText}>Llamar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} onPress={mail}>
+                <MaterialCommunityIcons name="email" size={20} color="#1C325B" />
+                <Text style={styles.actionText}>Correo</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} onPress={edit}>
+                <MaterialCommunityIcons name="pencil" size={20} color="#1C325B" />
+                <Text style={styles.actionText}>Editar</Text>
+              </TouchableOpacity>
+            </View>
+          </GlassBox>
+
+          {/* Sección info adicional (opcional) */}
+          <GlassBox radius={14} padding={16} intensity={24} style={styles.extraBox}>
+            <View style={styles.row}>
+              <MaterialCommunityIcons name="shield-check" size={18} color={colors.iconOnBlue} />
+              <Text style={styles.extraText}>Cuenta verificada</Text>
+            </View>
+            <View style={styles.row}>
+              <MaterialCommunityIcons name="map-marker" size={18} color={colors.iconOnBlue} />
+              <Text style={styles.extraText}>Managua, Nicaragua</Text>
+            </View>
+          </GlassBox>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#22335F' },
   header: {
-    flexDirection: 'row', alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingVertical: 10,
   },
-  headerTitle: { color: '#fff', fontSize: 18, fontWeight: '800' },
+  headerTitle: { color: colors.white, fontSize: 18, fontWeight: '800' },
   circleBtn: {
     width: 40, height: 40, borderRadius: 20,
     alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.15)',
+    borderWidth: 1, borderColor: colors.border,
   },
 
+  content: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
   card: {
-    margin: 16, padding: 20, borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 14, shadowOffset: { width: 0, height: 8 } },
-      android: { elevation: 4 },
-    }),
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   avatarWrap: {
-    width: 84, height: 84, borderRadius: 42,
-    alignSelf: 'center', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)',
+    alignSelf: 'center',
     marginBottom: 12,
   },
-  avatarImg: { width: 84, height: 84, borderRadius: 42 },
-  name: { color: '#fff', fontSize: 20, fontWeight: '800', textAlign: 'center' },
-  secondary: { color: '#C7D2FE', textAlign: 'center', marginTop: 2 },
-  actions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, gap: 10 },
-  actionBtn: {
-    flex: 1, backgroundColor: '#EAEFF7', borderRadius: 12, paddingVertical: 12,
+  avatarImg: { width: 86, height: 86, borderRadius: 43 },
+  avatarFallback: {
+    width: 86, height: 86, borderRadius: 43,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.22)',
     alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: '#C5D3EA',
+  },
+  name: { color: colors.white, fontSize: 20, fontWeight: '800', textAlign: 'center' },
+  secondary: { color: colors.textSoft, textAlign: 'center', marginTop: 2 },
+
+  actions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 18, gap: 10 },
+  actionBtn: {
+    flex: 1,
+    backgroundColor: '#EAEFF7',
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#C5D3EA',
   },
   actionText: { color: '#1C325B', fontWeight: '700', marginTop: 2 },
+
+  extraBox: {
+    marginTop: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  extraText: { color: colors.white },
 })
