@@ -2,40 +2,72 @@
 // Estilos reutilizables para todos los botones de la app.
 // Se combinan con iconos o textos según el caso.
 
-import { StyleSheet } from 'react-native'
-import { colors } from './colors'
-import { spacing } from './spacing'
+import { StyleSheet } from 'react-native';
+import { colors } from './colors';
+import { spacing } from './spacing';
+
+const buttonRadius = 15;
 
 export const buttonStyles = StyleSheet.create({
   primary: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: 25,
+    backgroundColor: colors.primaryLight,
+    padding: spacing.xs,
+    borderRadius: buttonRadius,
     width: '100%',
-    marginTop: spacing.sm,
+  },
+  // Variante oscura del botón primario para efectos pressed
+  primaryPressed: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primaryPressed, // Color más oscuro
+    padding: spacing.xs,
+    borderRadius: buttonRadius,
+    width: '100%',
   },
   primaryText: {
-    color: colors.background,
     fontWeight: 'bold',
     marginLeft: 8,
   },
-
+  secondary: {
+    flexDirection: 'row',
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primaryDark,
+    borderRadius: buttonRadius,
+    width: '100%',
+  },
+  // Variante oscura del botón secundario
+  secondaryPressed: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.secondaryDark,
+    padding: spacing.xxs,
+    paddingHorizontal: spacing.md,
+    borderRadius: buttonRadius,
+    width: '100%',
+  },
+  secondaryText: {
+    fontWeight: 'bold',
+  },
   outline: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: colors.primary,
-    padding: spacing.md,
-    borderRadius: 25,
+    borderColor: colors.secondaryLight,
+    // padding: spacing.xs,
+    borderRadius: buttonRadius,
     width: '100%',
-    marginTop: spacing.sm,
+    // marginTop: spacing.sm,
   },
   outlineText: {
-    color: colors.primary,
+    color: colors.secondaryLight,
     fontWeight: 'bold',
     marginLeft: 8,
   },
@@ -45,9 +77,8 @@ export const buttonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.secondary,
-    padding: spacing.md,
-    borderRadius: 25,
-    width: '100%',
-    marginTop: spacing.md,
+    padding: spacing.sm,
+    borderRadius: buttonRadius,
+    width: '100%'
   },
 })
