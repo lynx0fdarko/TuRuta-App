@@ -11,7 +11,7 @@ import { colors } from '../styles/colors'
 const TABS = [
   { name: 'home',      icon: 'magnify',   aria: 'Direcciones' },
   { name: 'stops',     icon: 'bus-stop',  aria: 'Paradas y horarios' },
-  { name: 'favorites', icon: 'routes',    aria: 'Recorridos' },
+  { name: 'routes', icon: 'routes',   aria: 'Itinerarios y rutas' },
 ]
 
 const PILL_RADIUS = 9999

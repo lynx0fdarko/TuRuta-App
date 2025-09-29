@@ -3,16 +3,20 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Dimensio
 import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useRouter } from 'expo-router'
 import GlassBox from '../../../components/GlassBox'
 import { colors } from '../../../styles/colors'
 import { typography } from '../../../styles/typography'
 
-const COLLAPSED_PERCENT = 0.40   // sheet al 40%
+const COLLAPSED_PERCENT = 0.40
 const { height: WIN_H } = Dimensions.get('window')
-const SEARCH_BOTTOM = Math.round(WIN_H * COLLAPSED_PERCENT) + 12 // buscador pegado al borde del sheet
+const SEARCH_BOTTOM = Math.round(WIN_H * COLLAPSED_PERCENT) + 12
 
 export default function Home() {
+  const router = useRouter()
+  const insets = useSafeAreaInsets()              // 👈 usar dentro del componente
+
   const bottomSheetRef = useRef(null)
   const snapPoints = useMemo(() => ['40%', '75%'], [])
 
@@ -41,9 +45,16 @@ export default function Home() {
       />
 
       <SafeAreaView style={{ flex: 1 }}>
-        {/* Avatar (opcional) */}
-        <View style={styles.headerRow}>
-          <TouchableOpacity style={styles.avatarBtn} activeOpacity={0.8}>
+        {/* Avatar: absoluto arriba-izquierda (encima de todo) */}
+        <View style={[styles.headerRow, { top: insets.top + 4 }]}>
+          <TouchableOpacity
+            style={styles.avatarBtn}
+            activeOpacity={0.8}
+            onPress={() => router.push('/(drawer)/profile')}
+            accessibilityRole="button"
+            accessibilityLabel="Abrir perfil"
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <MaterialCommunityIcons name="account" size={28} color={colors.iconOnBlue} />
           </TouchableOpacity>
         </View>
@@ -102,7 +113,7 @@ export default function Home() {
               </Text>
 
               <TouchableOpacity
-                onPress={() => setTab(t => (t === 'recent' ? 'favorites' : 'recent'))}
+                onPress={() => setTab((t) => (t === 'recent' ? 'favorites' : 'recent'))}
                 style={[styles.toggleChip, tab === 'favorites' && styles.toggleChipActive]}
                 activeOpacity={0.85}
               >
@@ -112,7 +123,7 @@ export default function Home() {
                   color={tab === 'favorites' ? colors.white : colors.secondary}
                 />
                 <Text style={[styles.toggleText, tab === 'favorites' && styles.toggleTextActive]}>
-                  {tab === 'recent' ? 'Favoritos' : 'Viajes rrecientes'}
+                  {tab === 'recent' ? 'Favoritos' : 'Viajes recientes'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -155,7 +166,7 @@ export default function Home() {
                 )
               }
 
-              // Recientes (tu diseño actual)
+              // Recientes
               const trip = item
               if (trip.highlighted) {
                 return (
@@ -205,14 +216,11 @@ export default function Home() {
   )
 }
 
-const RADIUS = 16
-
 const styles = StyleSheet.create({
   headerRow: {
-    paddingHorizontal: 16,
-    paddingTop: 4,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    position: 'absolute',
+    left: 16,
+    zIndex: 100,
   },
   avatarBtn: {
     width: 52, height: 52, borderRadius: 26,

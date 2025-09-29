@@ -10,20 +10,17 @@ export default function TabsLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarStyle: { display: 'none' }, // ocultamos la tab bar nativa
+          tabBarStyle: { display: 'none' },
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.muted,
         }}
       >
-        {/* Direcciones (Home) */}
-        <Tabs.Screen name="home" options={{ title: 'Direcciones' }} />
-        {/* Paradas y Horario */}
-        <Tabs.Screen name="stops" options={{ title: 'Paradas y Horario' }} />
-        {/* Recorridos */}
-        <Tabs.Screen name="favorites" options={{ title: 'Recorridos' }} />
+        <Tabs.Screen name="home"   options={{ title: 'Direcciones' }} />
+        <Tabs.Screen name="stops"  options={{ title: 'Paradas y Horario' }} />
+        {/* 👉 renombrado */}
+        <Tabs.Screen name="routes" options={{ title: 'Rutas' }} />
       </Tabs>
 
-      {/* Barra flotante de navegación */}
       <FloatingBar />
     </View>
   )
