@@ -25,7 +25,7 @@ export default function Home() {
   const [tab, setTab] = useState('recent')
 
   const trips = [
-    { id: 1, from: 'San judas',        to: 'UNICIT',         time: 'Hace 2h' },
+    { id: 1, from: 'San judas',        to: 'UNIVERSIDAD',         time: 'Hace 2h' },
     { id: 2, from: 'Mercado Oriental', to: 'Metrocentro',    time: 'Ayer', highlighted: true },
     { id: 3, from: 'Ticuantepe',       to: 'Managua centro', time: 'Lunes' },
   ]

@@ -6,7 +6,7 @@ export default {
     slug: 'enruta',
     version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/images/icon.png',
+    icon: './assets/images/icon-3.png',
     scheme: 'enruta',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
