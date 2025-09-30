@@ -10,6 +10,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="login" />
+          <Stack.Screen name="login/credentials" />   {/* ← NUEVA LINEA */}
           <Stack.Screen name="signup" />
           <Stack.Screen name="(drawer)" />
         </Stack>

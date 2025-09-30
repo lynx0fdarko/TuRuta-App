@@ -10,13 +10,12 @@ export default function Index() {
   const router = useRouter()
 
   useEffect(() => {
-    // chequea si hay sesión guardada
     supabase.auth.getSession().then(({ data }) => {
       const destino = data.session ? '/(drawer)/(tabs)/home' : '/login'
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 1500,
-        delay: 1000,
+        duration: 1200,
+        delay: 800,
         useNativeDriver: true,
       }).start(() => {
         router.replace(destino)
@@ -26,6 +25,7 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
+      {/* Animación simple de logo */}
       <Animated.View style={{ opacity: fadeAnim }}>
         <Ionicons name="bus" size={120} color="#2f6c52" />
       </Animated.View>
