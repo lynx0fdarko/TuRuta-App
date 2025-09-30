@@ -1,70 +1,67 @@
 // styles/buttons.js
 // Estilos reutilizables para todos los botones de la app.
-// Se combinan con iconos o textos según el caso.
 
-import { StyleSheet } from 'react-native';
-import { colors } from './colors';
-import { spacing } from './spacing';
+import { StyleSheet } from 'react-native'
+import { colors } from './colors'
+import { spacing } from './spacing'
 
-const buttonRadius = 15;
+const buttonRadius = 15
 
 export const buttonStyles = StyleSheet.create({
+  // PRIMARIO
   primary: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primaryLight,
-    padding: spacing.xs,
-    borderRadius: buttonRadius,
-    width: '100%',
-  },
-  // Variante oscura del botón primario para efectos pressed
-  primaryPressed: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primaryPressed, // Color más oscuro
-    padding: spacing.xs,
-    borderRadius: buttonRadius,
-    width: '100%',
-  },
-  primaryText: {
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  secondary: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primaryDark,
-    borderRadius: buttonRadius,
-    width: '100%',
-  },
-  // Variante oscura del botón secundario
-  secondaryPressed: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.secondaryDark,
-    padding: spacing.xxs,
+    paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     borderRadius: buttonRadius,
     width: '100%',
   },
+  primaryPressed: {
+    backgroundColor: colors.primaryPressed,
+  },
+  primaryText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+
+  // SECUNDARIO (llamado "secondary" en tu archivo)
+  secondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primaryDark,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: buttonRadius,
+    width: '100%',
+  },
+  secondaryPressed: {
+    backgroundColor: colors.secondaryDark,
+  },
   secondaryText: {
+    color: colors.white,
     fontWeight: 'bold',
   },
+
+  // OUTLINE
   outline: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: colors.secondaryLight,
-    // padding: spacing.xs,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     borderRadius: buttonRadius,
     width: '100%',
-    // marginTop: spacing.sm,
+  },
+  outlinePressed: {
+    borderColor: colors.primaryPressed,
+    backgroundColor: colors.primaryHover,
   },
   outlineText: {
     color: colors.secondaryLight,
@@ -72,13 +69,23 @@ export const buttonStyles = StyleSheet.create({
     marginLeft: 8,
   },
 
+  // INVITADO
   guest: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.secondary,
-    padding: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
     borderRadius: buttonRadius,
-    width: '100%'
+    width: '100%',
+  },
+  guestPressed: {
+    backgroundColor: colors.secondaryDark,
+  },
+  guestText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
 })
