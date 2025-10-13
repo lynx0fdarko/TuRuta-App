@@ -3,7 +3,9 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'                 // 👈 importar
+import { useRouter } from 'expo-router'
+import { BlurView } from 'expo-blur'
+
 import GlassBox from '../../../components/GlassBox'
 import AvatarButton from '../../../components/AvatarButton'
 import { colors } from '../../../styles/colors'
@@ -37,30 +39,39 @@ const DATA = [
 
 export default function RoutesScreen() {
   const insets = useSafeAreaInsets()
-  const router = useRouter()                            // 👈 crear instancia
+  const router = useRouter()
 
   return (
     <SafeAreaView style={styles.safe}>
-      {/* Header */}
-      <View style={styles.header}>
-        <AvatarButton
-          size={56}
-          uri={null} // pasa la URL real si la tenés
-          onPress={() => router.push('/(drawer)/profile')}   // 👈 usar router aquí
-          containerStyle={{ marginTop: insets.top }}
-        />
+      {/* ===== Header “vidrio” con menos espacio arriba ===== */}
+      <View style={[styles.headerRow, { paddingTop: Math.max(insets.top - 4, 8) }]}>
+        {/* Perfil (blur circle) */}
+        <BlurView intensity={35} tint="light" style={styles.blurCircle}>
+          <AvatarButton
+            size={42}
+            uri={null}
+            onPress={() => router.push('/(drawer)/profile')}
+          />
+        </BlurView>
 
-        <GlassBox radius={18} padding={14} shadow={false} style={styles.headerPill}>
-          <Text style={styles.headerTitle}>El dorado ➜ Los Robles</Text>
-          <Text style={styles.headerSubtitle}>Ruta 105 · 15 min</Text>
-        </GlassBox>
+        {/* Centro: tarjeta blur con título */}
+        <BlurView intensity={35} tint="light" style={styles.blurCard}>
+          <Text style={styles.menuTitle}>Menú de Rutas</Text>
+          <Text style={styles.menuSubtitle}>Explora y elige tu recorrido</Text>
+        </BlurView>
 
-        <TouchableOpacity activeOpacity={0.85} style={styles.searchBtn}>
-          <MaterialCommunityIcons name="magnify" size={22} color="#FFFFFF" />
+        {/* Buscar (blur circle) */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => {}}
+        >
+          <BlurView intensity={35} tint="light" style={styles.blurCircle}>
+            <MaterialCommunityIcons name="magnify" size={22} color={colors.secondary} />
+          </BlurView>
         </TouchableOpacity>
       </View>
 
-      {/* Lista */}
+      {/* ===== Lista ===== */}
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
         {DATA.map((item) => (
           <View key={item.id} style={styles.cardWrap}>
@@ -100,39 +111,57 @@ const BLUE_CARD = '#4B87B0'
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: YELLOW },
 
-  header: {
+  /* ===== Header ===== */
+  headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 10,
     gap: 12,
+    paddingHorizontal: 16,
+    marginBottom: 6, // un poco más compacto
   },
-  headerPill: {
+  blurCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#00000010',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } },
+      android: { elevation: 3 },
+    }),
+  },
+  blurCard: {
     flex: 1,
-    backgroundColor: '#C8D6C4' + '66',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#00000010',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
+      android: { elevation: 4 },
+    }),
   },
-  headerTitle: {
-    color: '#FFFFFF',
+  menuTitle: {
+    color: '#1B2B4B',
     fontSize: 18,
     fontWeight: '800',
     textAlign: 'center',
   },
-  headerSubtitle: {
-    color: '#EAF2FF',
-    fontSize: 13,
+  menuSubtitle: {
+    color: '#3E516A',
+    fontSize: 12,
     textAlign: 'center',
     marginTop: 2,
   },
-  searchBtn: {
-    width: 56, height: 56, borderRadius: 28,
-    backgroundColor: '#9EC3C7',
-    alignItems: 'center', justifyContent: 'center',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
-      android: { elevation: 6 },
-    }),
-  },
 
+  /* ===== Lista ===== */
   cardWrap: {
     backgroundColor: YELLOW_DEEP,
     borderRadius: 26,
