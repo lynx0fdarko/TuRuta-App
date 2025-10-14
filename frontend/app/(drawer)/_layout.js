@@ -9,6 +9,7 @@ import { View, Text } from 'react-native'
 
 function CustomDrawerContent(props) {
   const router = useRouter()
+
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.replace('/login')
@@ -22,19 +23,16 @@ function CustomDrawerContent(props) {
         <Text style={{ color: colors.secondary, marginTop: 4 }}>Mejor que esperar sin saber.</Text>
       </View>
 
-      {/* Rutas generadas por expo-router (el (tabs)) */}
+      {/* Ítems declarados en <Drawer.Screen /> */}
       <DrawerItemList {...props} />
 
       {/* Acciones extra */}
       <DrawerItem
-        label="Perfil"
-        onPress={() => router.push('/(drawer)/(tabs)/home')}
-        icon={({ color, size }) => <MaterialCommunityIcons name="account-circle" color={color} size={size} />}
-      />
-      <DrawerItem
         label="Cerrar sesión"
         onPress={handleLogout}
-        icon={({ color, size }) => <MaterialCommunityIcons name="logout" color={color} size={size} />}
+        icon={({ color, size }) => (
+          <MaterialCommunityIcons name="logout" color={color} size={size} />
+        )}
       />
     </DrawerContentScrollView>
   )
@@ -50,13 +48,35 @@ export default function DrawerLayout() {
       }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
-      {/* El grupo de Tabs como una "pantalla" del Drawer */}
+      {/* Inicio -> agrupa tus tabs (home, stops, routes) */}
       <Drawer.Screen
         name="(tabs)"
         options={{
           drawerLabel: 'Inicio',
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="view-dashboard" color={color} size={size} />
+          ),
+        }}
+      />
+
+      {/* Reportes ciudadanos (moverlo aquí) */}
+      <Drawer.Screen
+        name="reports"
+        options={{
+          drawerLabel: 'Reportes ciudadanos',
+          drawerIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="alert-circle" color={color} size={size} />
+          ),
+        }}
+      />
+
+      {/* Perfil existente */}
+      <Drawer.Screen
+        name="profile"
+        options={{
+          drawerLabel: 'Perfil',
+          drawerIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account-circle" color={color} size={size} />
           ),
         }}
       />

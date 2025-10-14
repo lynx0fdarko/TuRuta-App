@@ -1,0 +1,18 @@
+{
+  "functions": 
+
+  {
+    "api/sync-vehicles.js": {
+      "maxDuration": 60
+    }
+  },
+
+  "crons": 
+  [
+    {
+      "path": "/api/sync-vehicles",
+      "schedule": "0 * * * *"
+    }
+  ]
+  
+}

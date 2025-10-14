@@ -2,9 +2,15 @@ import React, { useRef, useMemo, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native'
 import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+<<<<<<< HEAD
 import { LinearGradient } from 'expo-linear-gradient'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
+=======
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useRouter } from 'expo-router'
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
 
 import GlassBox from '../../../components/GlassBox'
 import AvatarButton from '../../../components/AvatarButton'
@@ -15,11 +21,41 @@ const COLLAPSED_PERCENT = 0.40
 const { height: WIN_H } = Dimensions.get('window')
 const SEARCH_BOTTOM = Math.round(WIN_H * COLLAPSED_PERCENT) + 12
 
+<<<<<<< HEAD
+=======
+// Región inicial (Managua aprox.)
+const INITIAL_REGION = {
+  latitude: 12.136389,
+  longitude: -86.251389,
+  latitudeDelta: 0.05,
+  longitudeDelta: 0.05,
+}
+
+// Estilo opcional del mapa (oscuro suave)
+const MAP_STYLE = [
+  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+]
+
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
 export default function Home() {
   const router = useRouter()
   const insets = useSafeAreaInsets()
   const bottomSheetRef = useRef(null)
   const snapPoints = useMemo(() => ['40%', '75%'], [])
+  const [tab, setTab] = useState('recent') // 'recent' | 'favorites'
+
+  const trips = [
+    { id: 1, from: 'San judas',        to: 'UNICIT',         time: 'Hace 2h' },
+    { id: 2, from: 'Mercado Oriental', to: 'Metrocentro',    time: 'Ayer', highlighted: true },
+    { id: 3, from: 'Ticuantepe',       to: 'Managua centro', time: 'Lunes' },
+  ]
+
+  const favorites = [
+    { id: 'f1', from: 'UNICIT', to: 'Galerías Santo Domingo' },
+    { id: 'f2', from: 'UNICIT', to: 'La Plancha, El Carmen', highlighted: true },
+  ]
 
   // pestaña activa: 'recent' | 'favorites'
   const [tab, setTab] = useState('recent')
@@ -37,6 +73,7 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
+<<<<<<< HEAD
       {/* Gradiente diagonal */}
       <LinearGradient
         colors={[colors.bgStart, colors.bgEnd]}
@@ -49,6 +86,25 @@ export default function Home() {
         {/* Avatar (foto de perfil botón) */}
         <AvatarButton
           uri={null /* ← aquí pon la URL del avatar cuando la tengas */}
+=======
+      {/* 🗺️ MAPA como fondo */}
+      <MapView
+        style={StyleSheet.absoluteFill}
+        provider={PROVIDER_GOOGLE}
+        initialRegion={INITIAL_REGION}
+        showsUserLocation
+        showsMyLocationButton={false}
+        customMapStyle={MAP_STYLE}
+        toolbarEnabled={false}
+        rotateEnabled={false}
+      />
+
+      {/* 🔝 Capa de UI encima del mapa */}
+      <SafeAreaView style={{ flex: 1 }} pointerEvents="box-none">
+        {/* Avatar (foto de perfil botón) */}
+        <AvatarButton
+          uri={null}
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
           size={56}
           onPress={() => router.push('/(drawer)/profile')}
           containerStyle={{
@@ -57,8 +113,11 @@ export default function Home() {
             top: insets.top + 4,
             zIndex: 100,
           }}
+<<<<<<< HEAD
           // onPress opcional; por defecto abre /(drawer)/profile
           // onPress={() => router.push('/(drawer)/profile')}
+=======
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
         />
 
         {/* Buscador ANCLADO al borde superior del sheet */}

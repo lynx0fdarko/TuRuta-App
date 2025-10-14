@@ -3,7 +3,13 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+<<<<<<< HEAD
 import { useRouter } from 'expo-router'                 // 👈 importar
+=======
+import { useRouter } from 'expo-router'
+import { BlurView } from 'expo-blur'
+
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
 import GlassBox from '../../../components/GlassBox'
 import AvatarButton from '../../../components/AvatarButton'
 import { colors } from '../../../styles/colors'
@@ -37,6 +43,7 @@ const DATA = [
 
 export default function RoutesScreen() {
   const insets = useSafeAreaInsets()
+<<<<<<< HEAD
   const router = useRouter()                            // 👈 crear instancia
 
   return (
@@ -61,6 +68,41 @@ export default function RoutesScreen() {
       </View>
 
       {/* Lista */}
+=======
+  const router = useRouter()
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      {/* ===== Header “vidrio” con menos espacio arriba ===== */}
+      <View style={[styles.headerRow, { paddingTop: Math.max(insets.top - 4, 8) }]}>
+        {/* Perfil (blur circle) */}
+        <BlurView intensity={35} tint="light" style={styles.blurCircle}>
+          <AvatarButton
+            size={42}
+            uri={null}
+            onPress={() => router.push('/(drawer)/profile')}
+          />
+        </BlurView>
+
+        {/* Centro: tarjeta blur con título */}
+        <BlurView intensity={35} tint="light" style={styles.blurCard}>
+          <Text style={styles.menuTitle}>Menú de Rutas</Text>
+          <Text style={styles.menuSubtitle}>Explora y elige tu recorrido</Text>
+        </BlurView>
+
+        {/* Buscar (blur circle) */}
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => {}}
+        >
+          <BlurView intensity={35} tint="light" style={styles.blurCircle}>
+            <MaterialCommunityIcons name="magnify" size={22} color={colors.secondary} />
+          </BlurView>
+        </TouchableOpacity>
+      </View>
+
+      {/* ===== Lista ===== */}
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
         {DATA.map((item) => (
           <View key={item.id} style={styles.cardWrap}>
@@ -100,6 +142,7 @@ const BLUE_CARD = '#4B87B0'
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: YELLOW },
 
+<<<<<<< HEAD
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -113,10 +156,52 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#FFFFFF',
+=======
+  /* ===== Header ===== */
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    marginBottom: 6, // un poco más compacto
+  },
+  blurCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#00000010',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } },
+      android: { elevation: 3 },
+    }),
+  },
+  blurCard: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#00000010',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
+      android: { elevation: 4 },
+    }),
+  },
+  menuTitle: {
+    color: '#1B2B4B',
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
     fontSize: 18,
     fontWeight: '800',
     textAlign: 'center',
   },
+<<<<<<< HEAD
   headerSubtitle: {
     color: '#EAF2FF',
     fontSize: 13,
@@ -133,6 +218,16 @@ const styles = StyleSheet.create({
     }),
   },
 
+=======
+  menuSubtitle: {
+    color: '#3E516A',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 2,
+  },
+
+  /* ===== Lista ===== */
+>>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
   cardWrap: {
     backgroundColor: YELLOW_DEEP,
     borderRadius: 26,
