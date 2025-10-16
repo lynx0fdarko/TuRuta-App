@@ -39,13 +39,13 @@ export default function Home() {
 
   const trips = [
     { id: 1, from: 'San judas',        to: 'UNICIT',         time: 'Hace 2h' },
-    { id: 2, from: 'Mercado Oriental', to: 'Metrocentro',    time: 'Ayer', highlighted: true },
+    { id: 2, from: 'Mercado Oriental', to: 'Metrocentro',    time: 'Ayer' },
     { id: 3, from: 'Ticuantepe',       to: 'Managua centro', time: 'Lunes' },
   ]
 
   const favorites = [
     { id: 'f1', from: 'UNICIT', to: 'Galerías Santo Domingo' },
-    { id: 'f2', from: 'UNICIT', to: 'La Plancha, El Carmen', highlighted: true },
+    { id: 'f2', from: 'UNICIT', to: 'La Plancha, El Carmen' },
   ]
 
   return (
@@ -149,60 +149,29 @@ export default function Home() {
             {/* Lista: recientes o favoritos */}
             {(tab === 'recent' ? trips : favorites).map((item) => {
               if (tab === 'favorites') {
-                const highlighted = item.highlighted
                 return (
-                  <View
-                    key={item.id}
-                    style={[styles.favCard, highlighted && styles.favCardHighlight]}
-                  >
-                    <View style={[styles.favIconBox, highlighted && styles.favIconBoxHighlight]}>
+                  <View key={item.id} style={styles.favCard}>
+                    <View style={styles.favIconBox}>
                       <MaterialCommunityIcons
                         name="map-marker"
                         size={22}
-                        color={highlighted ? '#3C3C3C' : colors.iconOnBlue}
+                        color={colors.iconOnBlue}
                       />
                     </View>
 
-                    <Text
-                      numberOfLines={2}
-                      style={[styles.favTitle, highlighted && styles.favTitleHighlight]}
-                    >
+                    <Text numberOfLines={2} style={styles.favTitle}>
                       {item.from} ➜ {item.to}
                     </Text>
 
-                    <TouchableOpacity
-                      onPress={() => {}}
-                      style={[styles.starBtn, highlighted && styles.starBtnHighlight]}
-                    >
-                      <MaterialCommunityIcons
-                        name="star"
-                        size={18}
-                        color={highlighted ? '#3C3C3C' : colors.iconOnBlue}
-                      />
+                    <TouchableOpacity onPress={() => {}} style={styles.starBtn}>
+                      <MaterialCommunityIcons name="star" size={18} color={colors.iconOnBlue} />
                     </TouchableOpacity>
                   </View>
                 )
               }
 
-              // Recientes
+              // Recientes: todas las tarjetas uniformes
               const trip = item
-              if (trip.highlighted) {
-                return (
-                  <View key={trip.id} style={styles.solidCard}>
-                    <MaterialCommunityIcons name="map-marker-path" size={24} color={colors.secondary} />
-                    <View style={{ flex: 1 }}>
-                      <Text style={[typography.h3, { color: '#2A2A2A' }]}>
-                        {trip.from} → {trip.to}
-                      </Text>
-                      <Text style={[typography.caption, { color: '#4E4E4E' }]}>{trip.time}</Text>
-                    </View>
-                    <TouchableOpacity style={styles.chevBtnHighlight}>
-                      <MaterialCommunityIcons name="chevron-right" size={22} color={'#3C3C3C'} />
-                    </TouchableOpacity>
-                  </View>
-                )
-              }
-
               return (
                 <GlassBox
                   key={trip.id}
@@ -311,29 +280,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     gap: 12,
   },
-  solidCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.highlight,
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 12,
-    ...(Platform.OS === 'android'
-      ? { elevation: 4 }
-      : { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } }),
-  },
+
   chevBtn: {
     width: 36, height: 36, borderRadius: 18,
     alignItems: 'center', justifyContent: 'center',
     backgroundColor: colors.cardAlt,
     marginLeft: 10,
     borderWidth: 1, borderColor: colors.border,
-  },
-  chevBtnHighlight: {
-    width: 36, height: 36, borderRadius: 18,
-    alignItems: 'center', justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderColor: 'rgba(60,60,60,0.12)',
   },
 
   // Tarjetas Favoritos
@@ -348,10 +301,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  favCardHighlight: {
-    backgroundColor: colors.highlight,
-    borderColor: 'rgba(60,60,60,0.08)',
-  },
   favIconBox: {
     width: 48, height: 48, borderRadius: 12,
     alignItems: 'center', justifyContent: 'center',
@@ -359,21 +308,12 @@ const styles = StyleSheet.create({
     marginRight: 12,
     borderWidth: 1, borderColor: colors.border,
   },
-  favIconBoxHighlight: {
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderColor: 'rgba(60,60,60,0.12)',
-  },
   favTitle: { flex: 1, color: colors.white, fontWeight: '700' },
-  favTitleHighlight: { color: '#2A2A2A', fontWeight: '700' },
   starBtn: {
     width: 36, height: 36, borderRadius: 18,
     alignItems: 'center', justifyContent: 'center',
     backgroundColor: colors.secondary + '33',
     marginLeft: 10,
     borderWidth: 1, borderColor: colors.border,
-  },
-  starBtnHighlight: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
-    borderColor: 'rgba(60,60,60,0.12)',
   },
 })
