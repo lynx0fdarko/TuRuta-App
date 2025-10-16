@@ -1,5 +1,6 @@
 // backend/api/sync-vehicles.js
-import supabase from "../lib/supabaseAdmin.js"
+import { supabase } from "../lib/supabaseAdmin.js"
+
 import fetch from "node-fetch"
 
 const BASE = process.env.WHATSGPS_BASE_URL || "https://www.whatsgps.com"
@@ -106,7 +107,8 @@ export default async function handler(_req, res) {
           .upsert(
             {
               bus_id: bus.id,
-              whatsgps_device_id: imei,
+              whatsgps_device_id: imei, // IMEI
+              car_id: String(car.carId),  // campo con el ID real de WhatsGPS
               created_at: new Date().toISOString(),
             },
             { onConflict: "whatsgps_device_id" }

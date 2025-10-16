@@ -10,8 +10,8 @@
   "crons": 
   [
     {
-      "path": "/api/sync-vehicles",
-      "schedule": "0 * * * *"
+      "path": ["/api/sync-vehicles", "/api/ingest"],
+      "schedule": "*/3 * * * *"
     }
   ]
   

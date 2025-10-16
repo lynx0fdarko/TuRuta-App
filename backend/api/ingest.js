@@ -1,99 +1,99 @@
-// backend/api/ingest.js
+// api/ingest.js
 import { supabase } from '../lib/supabaseAdmin.js'
+import { withCors } from '../lib/cors.js'
 import { getUserId, getStatusesByUser } from '../lib/whatsgps.js'
 
-export default async function handler(_req, res) {
+const validCoord = (lat, lng) =>
+  Number.isFinite(lat) &&
+  Number.isFinite(lng) &&
+  lat >= -90 &&
+  lat <= 90 &&
+  lng >= -180 &&
+  lng <= 180
+
+async function handler(_req, res) {
   try {
-    // 1. Validar credenciales básicas
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return res.status(500).json({ error: 'Faltan credenciales de Supabase' })
-    }
-    if (!process.env.WHATSGPS_USERNAME || !process.env.WHATSGPS_PASSWORD) {
-      return res.status(500).json({ error: 'Faltan credenciales de WhatsGPS' })
-    }
-
-    // 2. Obtener usuario de WhatsGPS
     const userId = await getUserId()
-    if (!userId) {
-      return res.status(502).json({ error: 'No se pudo obtener userId de WhatsGPS' })
+    const statuses = (await getStatusesByUser(userId, { mapType: 2 })) || []
+
+    if (!statuses.length) {
+      console.warn("⚠️ WhatsGPS no devolvió posiciones activas.")
+      return res.json({ ok: true, inserted_historical: 0, updated_live: 0, ts: new Date().toISOString() })
     }
 
-    // 3. Obtener estatus de buses en tiempo real
-    const statuses = await getStatusesByUser(userId, { mapType: 2 })
-    if (!Array.isArray(statuses) || !statuses.length) {
-      return res.status(200).json({ ok: true, inserted: 0, warning: 'No hay datos disponibles de WhatsGPS' })
-    }
-
-    // 4. Leer dispositivos registrados en DB
-    const { data: devices, error: devicesError } = await supabase
+    // Traer los dispositivos registrados en Supabase
+    const { data: devices, error: dErr } = await supabase
       .from('gps_devices')
-      .select('id, bus_id, whatsgps_device_id')
+      .select('id, bus_id, whatsgps_device_id, car_id')
+    if (dErr) throw new Error(dErr.message)
 
-    if (devicesError) {
-      return res.status(500).json({ error: `Error al consultar gps_devices: ${devicesError.message}` })
-    }
-    if (!devices || !devices.length) {
-      return res.status(200).json({ ok: true, inserted: 0, warning: 'No hay dispositivos registrados en gps_devices' })
-    }
+    // Mapa por IMEI (whatsgps_device_id)
+    const byImei = new Map((devices || []).map(d => [String(d.whatsgps_device_id), d]))
 
-    // 5. Mapear posiciones a buses
-    const positions = []
-    const liveUpdates = []
+    const histRows = []
+    const liveRows = []
+
+    console.log(`Statuses recibidos: ${statuses.length}`)
 
     for (const s of statuses) {
-      const device = devices.find(d => d.whatsgps_device_id === String(s.carId))
-      if (!device) continue
+      const imei = String(s.imei)
+      const dev = byImei.get(imei)
+      if (!dev) continue // no está registrado ese dispositivo
 
-      const recordedAt = s.pointTime
-        ? new Date(Number(s.pointTime)).toISOString()
+      const lat = parseFloat(s.lat)
+      const lng = parseFloat(s.lon)
+      if (!validCoord(lat, lng)) continue
+
+      const recorded_at = s.pointDt
+        ? new Date(s.pointDt).toISOString()
         : new Date().toISOString()
 
-      // Para histórico
-      positions.push({
-        bus_id: device.bus_id,
-        position: `POINT(${s.lon} ${s.lat})`, // formato PostGIS
-        recorded_at: recordedAt
+      const wkt = `SRID=4326;POINT(${lng} ${lat})`
+
+      histRows.push({
+        bus_id: dev.bus_id,
+        device_id: dev.id,
+        position: wkt,
+        recorded_at,
       })
 
-      // Para vivo
-      liveUpdates.push({
-        device_id: device.id,
-        bus_id: device.bus_id,
-        lat: s.lat,
-        lng: s.lon,
-        speed_kph: s.speed ?? null,
-        heading: s.dir ?? null,
-        recorded_at: recordedAt
+      liveRows.push({
+        device_id: dev.id,
+        bus_id: dev.bus_id,
+        lat,
+        lng,
+        speed_kph: Number.isFinite(s.speed) ? s.speed : null,
+        heading: Number.isFinite(s.dir) ? s.dir : null,
+        recorded_at,
       })
     }
 
-    // 6. Insertar histórico en bus_positions
-    if (positions.length > 0) {
-      const { error: insertError } = await supabase.from('bus_positions').insert(positions)
-      if (insertError) {
-        console.error('Error al insertar en bus_positions:', insertError)
-        return res.status(500).json({ error: `Error al insertar en bus_positions: ${insertError.message}` })
-      }
+    // Guardar en histórico
+    if (histRows.length) {
+      const { error: histErr } = await supabase
+        .from('bus_positions')
+        .insert(histRows, { ignoreDuplicates: true })
+      if (histErr) throw new Error(`bus_positions: ${histErr.message}`)
     }
 
-    // 7. Actualizar/Upsert en bus_live (última posición por dispositivo)
-    if (liveUpdates.length > 0) {
-      const { error: liveError } = await supabase
+    // Guardar en tabla "live"
+    if (liveRows.length) {
+      const { error: liveErr } = await supabase
         .from('bus_live')
-        .upsert(liveUpdates, { onConflict: 'device_id' }) // asegura que se actualice si ya existe
-      if (liveError) {
-        console.error('Error al actualizar bus_live:', liveError)
-        return res.status(500).json({ error: `Error al actualizar bus_live: ${liveError.message}` })
-      }
+        .upsert(liveRows, { onConflict: 'device_id' })
+      if (liveErr) throw new Error(`bus_live: ${liveErr.message}`)
     }
 
-    return res.status(200).json({
+    res.json({
       ok: true,
-      inserted_historical: positions.length,
-      updated_live: liveUpdates.length
+      inserted_historical: histRows.length,
+      updated_live: liveRows.length,
+      ts: new Date().toISOString(),
     })
   } catch (e) {
-    console.error('Error inesperado en ingest:', e)
-    return res.status(500).json({ error: e.message || 'Error inesperado en ingest' })
+    console.error("Error en ingest:", e.message)
+    res.status(500).json({ error: e.message })
   }
 }
+
+export default withCors(handler, { methods: ['GET', 'POST', 'OPTIONS'] })
