@@ -1,17 +1,20 @@
-// web-admin/app/api/vehicles/route.js
 import { NextResponse } from "next/server"
-import { getVehicles } from "@/lib/whatsgps"
+import { createClient } from "@supabase/supabase-js"
 
-export const dynamic = "force-dynamic" // evita caché en prod
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,  // <- solo server
+  { auth: { persistSession: false } }
+)
 
 export async function GET() {
-  try {
-    const items = await getVehicles()
-    // Controla caching del CDN sin estancar datos
-    return NextResponse.json({ items }, {
-      headers: { "Cache-Control": "no-store" },
-    })
-  } catch (e) {
-    return NextResponse.json({ error: String(e?.message || e) }, { status: 500 })
-  }
+  const { data, error } = await supabase
+    .from("vehicle_positions")
+    .select("id, lat, lng, heading, speed, plate")
+    .limit(1000)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ items: data ?? [] }, { headers: { "Cache-Control": "no-store" } })
 }
+
+export const dynamic = "force-dynamic"

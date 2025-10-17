@@ -1,0 +1,56 @@
+/* app/login/login.module.css — sin :root */
+
+.screen{
+  position:relative; min-height:100dvh; background:#000;
+  display:grid; place-items:center; overflow:hidden;
+}
+.bg{
+  position:absolute; inset:0;
+  background-image:url("/bg-buses.jpg");
+  background-size:cover; background-position:center;
+  filter:brightness(.6);
+}
+.card{
+  position:relative; width:min(720px,92vw);
+  background:#fff; border-radius:24px; padding:72px 48px 40px;
+  box-shadow:0 20px 40px rgba(0,0,0,.15); border:1px solid rgba(0,0,0,.08);
+}
+.avatar{
+  position:absolute; top:-56px; left:50%; transform:translateX(-50%);
+  width:112px; height:112px; border-radius:999px; background:var(--navy);
+  display:grid; place-items:center; border:6px solid #fff;
+  box-shadow:0 10px 24px rgba(0,0,0,.15);
+}
+.busIcon{ font-size:48px; color:#fff; }
+
+.form{ display:flex; flex-direction:column; gap:16px; }
+.label{ color:#1b2240; font-weight:800; font-size:18px; }
+.hidden{ position:absolute; left:-9999px; }
+
+.input{
+  width:100%; border:2px solid var(--navy); border-radius:18px;
+  padding:14px 18px; font-size:20px; color:#1b2240; outline:none; background:#fff;
+}
+.input::placeholder{ color:#5b6591; opacity:.7; font-weight:700; }
+
+.row{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+.check{ display:flex; align-items:center; gap:8px; color:#1b2240; font-weight:800; }
+.check input{ width:18px; height:18px; }
+
+.link{
+  background:transparent; border:none; cursor:pointer;
+  color:var(--navy); font-weight:800; text-decoration:underline;
+}
+
+.error{
+  background:#ffe2e2; color:#7a1111; border:1px solid #efb8b8;
+  padding:8px 12px; border-radius:10px; font-weight:700;
+}
+
+.cta{
+  margin-top:8px; width:280px; max-width:100%; align-self:center;
+  padding:16px 20px; border:none; border-radius:18px;
+  background:#a9c6e3; color:#fff; font-weight:900; font-size:18px;
+  box-shadow:0 8px 16px rgba(0,0,0,.12); cursor:pointer;
+}
+.cta:disabled{ opacity:.7; cursor:not-allowed; }

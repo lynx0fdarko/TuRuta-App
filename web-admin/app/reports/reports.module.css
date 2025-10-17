@@ -1,0 +1,158 @@
+/* NO variables globales aquí; van en app/globals.css */
+
+.root{
+  position:relative;
+  min-height:100dvh;
+  background:var(--bg-cream);
+  color:var(--text);
+  padding:16px;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.header{ display:flex; align-items:center; gap:16px; }
+
+.title{
+  position:absolute; left:84px; top:16px; margin:0;
+  color:var(--navy);
+  font-weight:800; font-size:28px; letter-spacing:.2px;
+}
+
+.logo{
+  margin-left:auto;
+  background:var(--navy-2); color:#fff;
+  padding:10px 18px;
+  border-radius:16px 16px 0 16px;
+  font-weight:800; font-size:20px;
+}
+
+.columns{
+  position:relative;
+  display:grid; grid-template-columns:1.15fr 1fr; gap:18px;
+  margin-top:64px; padding-left:72px; /* despeje del rail */
+}
+
+/* Izquierda */
+.leftCol{ display:flex; flex-direction:column; gap:16px; }
+
+.tagsCard{
+  background:var(--card-cream);
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:var(--radius-2);
+  padding:12px;
+  display:flex; align-items:center; gap:12px;
+  box-shadow:var(--shadow);
+}
+
+.routePill{
+  background:#e8e8ef; color:#0f1b3a;
+  padding:6px 12px; border-radius:999px;
+  font-weight:800; min-width:52px; text-align:center;
+}
+
+.tagList{ display:flex; gap:8px; flex-wrap:wrap; }
+
+.tag{
+  background:var(--navy-2); color:#fff;
+  padding:6px 12px; border-radius:999px;
+  font-size:13px; font-weight:700;
+}
+
+.moreBtn{
+  background:#e8eef7; color:#0f1b3a;
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:999px; padding:6px 12px;
+  font-weight:700; cursor:pointer;
+}
+
+.filtersCard{
+  background:var(--card-cream);
+  border-radius:var(--radius-2);
+  padding:14px;
+  border:1.4px solid rgba(0,0,0,.06);
+  box-shadow:var(--shadow);
+}
+
+.filtersHeader{
+  display:inline-block;
+  background:var(--navy-2); color:#fff;
+  padding:8px 14px; border-radius:12px;
+  font-weight:800; margin-bottom:10px;
+}
+
+.inputWrap{ margin-top:8px; }
+.input{
+  width:100%; padding:12px 14px; border-radius:12px;
+  border:1.4px solid rgba(0,0,0,.18);
+  background:#fff; color:var(--text);
+  font-weight:600; line-height:1.35;
+}
+
+.reportCard{
+  background:var(--card-blue);
+  border-radius:var(--radius-2);
+  padding:14px; border:1px solid rgba(0,0,0,.06);
+  box-shadow:var(--shadow);
+}
+
+.reportHeader{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:8px;
+}
+
+.routeChip{
+  background:var(--pill); color:#12274a;
+  padding:6px 12px; border-radius:999px;
+  font-weight:800;
+}
+
+.badge{
+  padding:6px 12px; border-radius:999px;
+  font-weight:800; font-size:12px; color:#fff;
+}
+.badgeDelay{ background:#2b2851; }
+.badgeDetour{ background:#5b89d6; }
+.badgeDefault{ background:#4b5563; }
+
+.reportBody{
+  background:var(--card-blue-deep);
+  border-radius:14px; padding:12px;
+}
+.reportTitle{
+  font-weight:800; color:#0f1b3a;
+  margin-bottom:6px; line-height:1.25;
+}
+.reportText{ margin:0; color:#212121; line-height:1.5; font-weight:600; }
+
+.reportFooter{ display:flex; justify-content:flex-end; margin-top:8px; }
+.linkBtn{
+  background:#e8eef7; border:1px solid rgba(0,0,0,.08);
+  border-radius:12px; padding:8px 12px; cursor:pointer;
+  font-weight:800; color:#0f1b3a;
+}
+
+/* Derecha */
+.rightCol{ display:flex; flex-direction:column; gap:14px; }
+
+.alertHeader{
+  display:inline-block; background:var(--navy-2); color:#fff;
+  padding:10px 14px; border-radius:12px; font-weight:800;
+}
+
+.coopRow{
+  background:var(--card-cream);
+  border-radius:16px; padding:12px;
+  display:grid; grid-template-columns:1fr auto; align-items:center;
+  border:1px solid rgba(0,0,0,.06); box-shadow:var(--shadow);
+}
+
+.coopInfo{ padding-right:12px; }
+.coopName{ font-weight:900; color:var(--navy); margin-bottom:4px; }
+.coopDesc{ color:var(--muted); font-weight:600; line-height:1.5; }
+
+.alertBtn{
+  background:var(--yellow); border:none;
+  padding:10px 14px; border-radius:12px;
+  font-weight:900; cursor:pointer; color:#1c1b14;
+}
+.alertBtn:hover{ filter:brightness(0.98); }
