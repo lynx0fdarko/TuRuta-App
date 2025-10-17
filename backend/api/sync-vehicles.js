@@ -1,6 +1,5 @@
 // backend/api/sync-vehicles.js
 import { supabase } from "../lib/supabaseAdmin.js"
-
 import fetch from "node-fetch"
 
 const BASE = process.env.WHATSGPS_BASE_URL || "https://www.whatsgps.com"
@@ -53,7 +52,7 @@ export default async function handler(_req, res) {
         const matricula = car.machineName || null
         const imei = car.imei || null
         const carNO = car.carNO || null // → route.number
-        const driverName = car.driverName || null // → buses.operator
+        const coopName = car.driverName?.trim() || null // → cooperatives.name
         const isActive = car.clientServiceStatus === 1 // bool
 
         if (!matricula || !imei) {
@@ -61,7 +60,23 @@ export default async function handler(_req, res) {
           continue
         }
 
-        // 3. Upsert en rutas (si carNO existe)
+        // 3. Upsert en cooperativas (si hay nombre)
+        let cooperativeId = null
+        if (coopName) {
+          const { data: coop, error: coopErr } = await supabase
+            .from("cooperatives")
+            .upsert({ name: coopName }, { onConflict: "name" })
+            .select("id")
+            .maybeSingle()
+
+          if (coopErr) {
+            console.error("Error creando cooperativa:", coopErr)
+            throw new Error(coopErr.message)
+          }
+          cooperativeId = coop?.id || null
+        }
+
+        // 4. Upsert en rutas (si carNO existe)
         let routeId = null
         if (carNO) {
           const { data: route, error: routeErr } = await supabase
@@ -71,7 +86,7 @@ export default async function handler(_req, res) {
               { onConflict: "number" }
             )
             .select("id")
-            .single()
+            .maybeSingle()
 
           if (routeErr) {
             console.error("Error insertando route:", routeErr)
@@ -80,35 +95,35 @@ export default async function handler(_req, res) {
           routeId = route?.id || null
         }
 
-        // 4. Upsert en buses
+        // 5. Upsert en buses (sin operator)
         const { data: bus, error: busErr } = await supabase
           .from("buses")
           .upsert(
             {
               matricula,
-              operator: driverName,
               is_active: isActive,
               route_id: routeId,
+              cooperative_id: cooperativeId,
               updated_at: new Date().toISOString(),
             },
             { onConflict: "matricula" }
           )
           .select("id")
-          .single()
+          .maybeSingle()
 
         if (busErr) {
           console.error("Error insertando bus:", busErr)
           throw new Error(busErr.message)
         }
 
-        // 5. Upsert en gps_devices
+        // 6. Upsert en gps_devices
         const { error: devErr } = await supabase
           .from("gps_devices")
           .upsert(
             {
-              bus_id: bus.id,
-              whatsgps_device_id: imei, // IMEI
-              car_id: String(car.carId),  // campo con el ID real de WhatsGPS
+              bus_id: bus?.id,
+              whatsgps_device_id: imei,
+              car_id: String(car.carId),
               created_at: new Date().toISOString(),
             },
             { onConflict: "whatsgps_device_id" }
@@ -122,7 +137,7 @@ export default async function handler(_req, res) {
         inserted++
       } catch (innerErr) {
         console.error("Error procesando vehículo:", innerErr.message)
-        continue // seguimos con el siguiente vehículo
+        continue
       }
     }
 
