@@ -3,10 +3,11 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const ITEMS = [
-  { href: "/",         label: "Mapa",     icon: "🚌" },
-  { href: "/reports",  label: "Reportes", icon: "❗" },
-  // agrega más si quieres...
+  { href: "/dashboard", label: "Mapa",     icon: "🚌" },
+  { href: "/reports",   label: "Reportes", icon: "❗" },
+   { href: "/routes",    label: "Rutas",    icon: "🗺️" },
 ]
+
 
 export default function SideRail() {
   const pathname = usePathname()

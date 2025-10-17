@@ -1,28 +1,45 @@
+// web-admin/middleware.js
 import { NextResponse } from "next/server"
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs"
+import { createServerClient } from "@supabase/ssr"
 
 export async function middleware(req) {
   const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
 
-  // Obtén sesión actual
+  const supabase = createServerClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        get(name) {
+          return req.cookies.get(name)?.value
+        },
+        set(name, value, options) {
+          res.cookies.set({ name, value, ...options })
+        },
+        remove(name, options) {
+          res.cookies.set({ name, value: "", ...options })
+        },
+      },
+    }
+  )
+
   const {
     data: { session },
   } = await supabase.auth.getSession()
 
   const { pathname } = req.nextUrl
-  const protectedPaths = ["/dashboard", "/reports"]
-  const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
+  const publicPaths = ["/login", "/api/health"]
+  const isPublic = publicPaths.some(
+    (p) => pathname === p || pathname.startsWith(p)
+  )
 
-  // Redirige si no hay sesión
-  if (isProtected && !session) {
+  if (!session && !isPublic) {
     const url = req.nextUrl.clone()
     url.pathname = "/login"
     return NextResponse.redirect(url)
   }
 
-  // Si ya inició sesión y entra a /login, redirige al dashboard
-  if (pathname === "/login" && session) {
+  if (session && pathname === "/login") {
     const url = req.nextUrl.clone()
     url.pathname = "/dashboard"
     return NextResponse.redirect(url)
