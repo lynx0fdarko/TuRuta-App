@@ -1,29 +1,58 @@
-import { supabase } from '../lib/supabaseAdmin.js'
-import { withCors } from '../lib/cors.js'
-
-const clamp = (n, a, b) => Math.max(a, Math.min(b, n))
+import { supabase } from "../lib/supabaseAdmin.js"
+import { withCors } from "../lib/cors.js"
 
 async function handler(req, res) {
-  const { bus_id, from, to, limit } = req.query
-  if (!bus_id) return res.status(400).json({ error: 'bus_id es requerido' })
+  try {
+    const { bus_id } = req.query
 
-  const lim = clamp(parseInt(limit || '500',10), 1, 5000)
+    if (!bus_id) {
+      return res
+        .status(400)
+        .json({ ok: false, error: "Falta el parámetro bus_id en la URL" })
+    }
 
-  // Si usas geometry, lee desde una vista que expone lat/lng (ver paso 3)
-  let q = supabase
-    .from('bus_positions_latlng')
-    .select('id,bus_id,lat,lng,recorded_at')
-    .eq('bus_id', bus_id)
+    // Consulta del historial de posiciones del bus específico
+    const { data, error } = await supabase
+      .from("bus_positions")
+      .select(`
+        bus_id,
+        lat,
+        lng,
+        speed_kph,
+        heading,
+        recorded_at,
+        buses!inner (
+          matricula,
+          is_active,
+          cooperative_id,
+          cooperatives (
+            name
+          )
+        )
+      `)
+      .eq("bus_id", bus_id)
+      .order("recorded_at", { ascending: false })
+      .limit(1000)
 
-  if (from) q = q.gte('recorded_at', new Date(from).toISOString())
-  if (to)   q = q.lte('recorded_at', new Date(to).toISOString())
+    if (error) throw error
 
-  q = q.order('recorded_at', { ascending: false }).limit(lim)
+    const result = data.map((r) => ({
+      bus_id: r.bus_id,
+      matricula: r.buses?.matricula ?? null,
+      cooperative_name: r.buses?.cooperatives?.name ?? null,
+      is_active: r.buses?.is_active ?? null,
+      lat: r.lat,
+      lng: r.lng,
+      speed_kph: r.speed_kph,
+      heading: r.heading,
+      recorded_at: r.recorded_at,
+    }))
 
-  const { data, error } = await q
-  if (error) return res.status(500).json({ error: error.message })
-
-  data.sort((a,b) => new Date(a.recorded_at) - new Date(b.recorded_at))
-  res.json(data)
+    return res.status(200).json({ ok: true, count: result.length, data: result })
+  } catch (err) {
+    console.error("Error en /history:", err.message)
+    return res.status(500).json({ ok: false, error: err.message })
+  }
 }
-export default withCors(handler, { methods: ['GET','OPTIONS'] })
+
+export default withCors(handler, { methods: ["GET", "OPTIONS"] })
