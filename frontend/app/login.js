@@ -1,16 +1,16 @@
 // app/login.js
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import * as Haptics from 'expo-haptics'
 import { useRouter } from 'expo-router'
 import { MotiView } from 'moti'
 import { useEffect } from 'react'
 import { Image, ImageBackground, Pressable, Text, View } from 'react-native'
-import * as Haptics from 'expo-haptics'
 
+import { supabase } from '../lib/supabase'
 import { authStyles } from '../styles/auth'
 import { buttonStyles } from '../styles/buttons'
 import { colors } from '../styles/colors'
 import { spacing } from '../styles/spacing'
-import { supabase } from '../lib/supabase'
 
 export default function LoginWelcome() {
   const router = useRouter()
@@ -40,7 +40,7 @@ export default function LoginWelcome() {
       {/* Marca + título */}
       <View style={{ position: 'absolute', top: '33%' }}>
         <Image
-          source={require('../assets/images/Icono-blanco.png')}
+          source={require('../assets/images/icono-blanco.png')}
           style={{ width: 'auto', height: 120, resizeMode: 'contain' }}
         />
         <Text style={{ color: colors.white, fontSize: 48, fontWeight: 'bold', textAlign: 'center' }}>

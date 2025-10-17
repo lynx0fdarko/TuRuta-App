@@ -1,17 +1,12 @@
 // app/(drawer)/(tabs)/routes.js
-import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-<<<<<<< HEAD
-import { useRouter } from 'expo-router'                 // 👈 importar
-=======
-import { useRouter } from 'expo-router'
 import { BlurView } from 'expo-blur'
+import { useRouter } from 'expo-router'
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
->>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
-import GlassBox from '../../../components/GlassBox'
 import AvatarButton from '../../../components/AvatarButton'
+import GlassBox from '../../../components/GlassBox'
 import { colors } from '../../../styles/colors'
 
 const DATA = [
@@ -43,82 +38,85 @@ const DATA = [
 
 export default function RoutesScreen() {
   const insets = useSafeAreaInsets()
-<<<<<<< HEAD
-  const router = useRouter()                            // 👈 crear instancia
-
-  return (
-    <SafeAreaView style={styles.safe}>
-      {/* Header */}
-      <View style={styles.header}>
-        <AvatarButton
-          size={56}
-          uri={null} // pasa la URL real si la tenés
-          onPress={() => router.push('/(drawer)/profile')}   // 👈 usar router aquí
-          containerStyle={{ marginTop: insets.top }}
-        />
-
-        <GlassBox radius={18} padding={14} shadow={false} style={styles.headerPill}>
-          <Text style={styles.headerTitle}>El dorado ➜ Los Robles</Text>
-          <Text style={styles.headerSubtitle}>Ruta 105 · 15 min</Text>
-        </GlassBox>
-
-        <TouchableOpacity activeOpacity={0.85} style={styles.searchBtn}>
-          <MaterialCommunityIcons name="magnify" size={22} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Lista */}
-=======
   const router = useRouter()
+  const yellowArtifact = require('../../../assets/images/Artifact.png')
 
   return (
     <SafeAreaView style={styles.safe}>
+      <Image source={yellowArtifact} style={{
+        position: 'absolute',
+        width: 200,
+        height: 225,
+        top: -50,
+        left: -45,
+        transform: [{ rotate: '200deg' }]
+      }}/>
+      <Image source={yellowArtifact} style={{
+        position: 'absolute',
+        width: 200,
+        height: 225,
+        top: '28%',
+        right: -105,
+        transform: [{ rotate: '-30deg' }]
+      }}/>
+      <Image source={yellowArtifact} style={{
+        position: 'absolute',
+        width: 275,
+        height: 325,
+        bottom: -110,
+        left: 0,
+        transform: [{ rotate: '55deg' }],
+        objectFit: 'contain'
+      }}/>
       {/* ===== Header “vidrio” con menos espacio arriba ===== */}
       <View style={[styles.headerRow, { paddingTop: Math.max(insets.top - 4, 8) }]}>
+        
         {/* Perfil (blur circle) */}
-        <BlurView intensity={35} tint="light" style={styles.blurCircle}>
+        <BlurView intensity={35} tint="extraLight" style={styles.blurCircle}>
           <AvatarButton
-            size={42}
+            size={90}
             uri={null}
+            bgColor='rgba(255,255,255,0.35)'
+            iconColor='rgba(255,255,255, 0.85)'
             onPress={() => router.push('/(drawer)/profile')}
+            outline={true}
           />
         </BlurView>
 
         {/* Centro: tarjeta blur con título */}
         <BlurView intensity={35} tint="light" style={styles.blurCard}>
-          <Text style={styles.menuTitle}>Menú de Rutas</Text>
-          <Text style={styles.menuSubtitle}>Explora y elige tu recorrido</Text>
+          <View style={styles.blurCardInner}>
+            <Text style={styles.menuTitle}>El dorado → Los Robles</Text>
+            <Text style={styles.menuSubtitle}>Ruta 105 - 15 min</Text>
+          </View>
+          {/* Buscar (blur circle) */}
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => {}}
+          >
+            <BlurView intensity={35} tint="light" style={[styles.blurCircle, { boxShadow: 'none', marginRight: 3 }]}>
+              <MaterialCommunityIcons name="magnify" size={22} color={colors.white} />
+            </BlurView>
+          </TouchableOpacity>
         </BlurView>
 
-        {/* Buscar (blur circle) */}
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={() => {}}
-        >
-          <BlurView intensity={35} tint="light" style={styles.blurCircle}>
-            <MaterialCommunityIcons name="magnify" size={22} color={colors.secondary} />
-          </BlurView>
-        </TouchableOpacity>
       </View>
 
       {/* ===== Lista ===== */}
->>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 90 }}>
         {DATA.map((item) => (
           <View key={item.id} style={styles.cardWrap}>
             <View style={styles.rowTop}>
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{item.id}</Text>
+                <MaterialCommunityIcons name="clock-check-outline" size={18} color="#FFF" />
               </View>
-              <TouchableOpacity style={styles.badgeRound}>
-                <MaterialCommunityIcons name="clock-check-outline" size={18} color="#285D65" />
-              </TouchableOpacity>
             </View>
 
             <GlassBox radius={18} padding={14} shadow={Platform.OS === 'android'} style={styles.infoBox}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.routeTitle} numberOfLines={2}>{item.title}</Text>
-                <Text style={styles.routePath} numberOfLines={2}>
+              <View style={{ flex: 1, marginStart: 12 }}>
+                <Text style={styles.routeTitle} numberOfLines={6}>{item.title}</Text>
+                <Text style={styles.routePath} numberOfLines={6}>
                   {item.path} <Text style={styles.more}>Ver más</Text>
                 </Text>
               </View>
@@ -137,55 +135,43 @@ export default function RoutesScreen() {
 /** Colores base del mock */
 const YELLOW = '#F4E791'
 const YELLOW_DEEP = '#E6DA7F'
-const BLUE_CARD = '#4B87B0'
+const BLUE_CARD = '#8fbac1'
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: YELLOW },
 
-<<<<<<< HEAD
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    gap: 12,
-  },
-  headerPill: {
-    flex: 1,
-    backgroundColor: '#C8D6C4' + '66',
-  },
-  headerTitle: {
-    color: '#FFFFFF',
-=======
   /* ===== Header ===== */
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     paddingHorizontal: 16,
-    marginBottom: 6, // un poco más compacto
+    marginRight: 25,
   },
   blurCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#00000010',
     ...Platform.select({
       ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } },
-      android: { elevation: 3 },
+      android: { elevation: 0 },
     }),
+    boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.25)',
   },
   blurCard: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 16,
+    paddingVertical: 6,
+    borderRadius: 100,
     alignItems: 'center',
-    justifyContent: 'center',
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#00000010',
@@ -193,41 +179,32 @@ const styles = StyleSheet.create({
       ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
       android: { elevation: 4 },
     }),
+    boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.25)',
+  },
+  blurCardInner: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    alignItems: 'center',
+    color: '#FFF',
+    marginLeft: 20,
+    padding: 0
   },
   menuTitle: {
-    color: '#1B2B4B',
->>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
-    fontSize: 18,
+    color: '#FFF',
+    fontSize: 14,
     fontWeight: '800',
     textAlign: 'center',
   },
-<<<<<<< HEAD
-  headerSubtitle: {
-    color: '#EAF2FF',
-    fontSize: 13,
-    textAlign: 'center',
-    marginTop: 2,
-  },
-  searchBtn: {
-    width: 56, height: 56, borderRadius: 28,
-    backgroundColor: '#9EC3C7',
-    alignItems: 'center', justifyContent: 'center',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOpacity: 0.18, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
-      android: { elevation: 6 },
-    }),
-  },
-
-=======
   menuSubtitle: {
-    color: '#3E516A',
-    fontSize: 12,
+    color: '#FFF',
+    fontSize: 14,
     textAlign: 'center',
     marginTop: 2,
+    fontWeight: '200'
   },
 
   /* ===== Lista ===== */
->>>>>>> 228b9f4a06669bb0f80b588f716e48e750ee2a7b
   cardWrap: {
     backgroundColor: YELLOW_DEEP,
     borderRadius: 26,
@@ -238,31 +215,53 @@ const styles = StyleSheet.create({
       android: { elevation: 3 },
     }),
   },
-  rowTop: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 10 },
+  rowTop: { flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    gap: 10,
+  },
   badge: {
-    backgroundColor: '#E7EDC9',
+    flexDirection: 'row',
+    gap: 15,
+    backgroundColor: '#96a996',
     paddingHorizontal: 14,
     height: 36,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.4)',
   },
-  badgeText: { color: '#4B5A43', fontWeight: '900', fontSize: 16 },
+  badgeText: { color: '#303959', fontWeight: '900', fontSize: 16 },
   badgeRound: {
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: '#E7EDC9',
     alignItems: 'center', justifyContent: 'center',
   },
-  infoBox: { backgroundColor: BLUE_CARD + 'D6' },
-  routeTitle: { color: '#10324A', fontSize: 16, fontWeight: '800', marginBottom: 6 },
-  routePath: { color: '#10324A', fontSize: 13, lineHeight: 18 },
+  infoBox: {
+    backgroundColor: '#8fbac1',
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.4)',
+  },
+  routeTitle: {
+    color: '#10324A',
+    fontSize: 13,
+    fontWeight: '800',
+    marginBottom: 2,
+    lineHeight: 12
+  },
+  routePath: {
+    color: '#10324A',
+    fontSize: 11,
+    lineHeight: 12
+  },
   more: { color: '#0B2C6E', fontWeight: '900' },
   airBtn: {
-    marginLeft: 10,
+    marginRight: -10,
     alignSelf: 'center',
-    width: 42, height: 42, borderRadius: 21,
-    backgroundColor: '#EAEFF7',
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: '#C5D3EA',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })

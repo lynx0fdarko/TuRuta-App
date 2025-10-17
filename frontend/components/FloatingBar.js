@@ -1,11 +1,11 @@
 // components/FloatingBar.js
-import React from 'react'
-import { View, TouchableOpacity, StyleSheet, Platform } from 'react-native'
-import { useRouter, usePathname } from 'expo-router'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { BlurView } from 'expo-blur'
+import { usePathname, useRouter } from 'expo-router'
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { colors } from '../styles/colors'
+import { colorToRgba } from './icons/SvgIcons'
 
 /** Tabs: icono + ruta */
 const TABS = [
@@ -50,8 +50,8 @@ export default function FloatingBar() {
                 >
                   <MaterialCommunityIcons
                     name={icon}
-                    size={24}
-                    color={active ? colors.primary : colors.text}
+                    size={36}
+                    color={colors.white}
                   />
                 </TouchableOpacity>
               )
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     ...Platform.select({
       // En Android, fallback de color por si el blur es tenue
-      android: { backgroundColor: colors.primary },
+      android: { backgroundColor: colorToRgba(colors.primary, 0.55) },
       ios: { backgroundColor: 'transparent' },
     }),
   },
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   },
 
   itemActive: {
-    backgroundColor: 'rgba(47,108,82,0.12)', // primary con alpha
+    backgroundColor: '#3b417b', // primary con alpha
+    // backgroundColor: 'rgba(47,108,82,0.12)', // primary con alpha
   },
 })

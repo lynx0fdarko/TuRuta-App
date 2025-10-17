@@ -25,13 +25,15 @@ const baseColors = {
   panel:     '#3B517F',               // sheet “Viajes recientes”
   glass:     'rgba(255,255,255,0.10)', // vidrio leve
   cardGlass: 'rgba(255,255,255,0.08)', // tarjetas
-  highlight: '#FFE69B',               // tarjeta amarilla
+  highlight: '#42506E',               // tarjeta amarilla
 
   card:      'rgba(255,255,255,0.10)', // azul vidrio de tarjeta normal
   cardAlt:   'rgba(255,255,255,0.18)', // azul un poco más claro (chips/areas)
   chipBg:    'rgba(0,0,0,0.22)',       // chip “Favoritos” sobre el panel
   handle:    '#7F90B7',                // barrita del sheet
   iconOnBlue:'#C9D6FF',                // iconos sobre azul
+  gradientStart: '#272d61',
+  gradientEnd:   '#94bfe0'
 }
 
 // Generar variaciones automáticamente

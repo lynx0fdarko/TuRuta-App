@@ -1,8 +1,7 @@
 // components/GlassBox.js
-import React from 'react'
-import { View, StyleSheet, Platform } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
+import { Platform, StyleSheet, View } from 'react-native'
 import { colors } from '../styles/colors'
 
 export default function GlassBox({
@@ -11,7 +10,11 @@ export default function GlassBox({
   padding = 12,
   intensity = 34,
   style,
-  shadow = false, // por defecto sin sombra
+  shadow = false,
+  childrenStyle = {
+    display: 'flex',
+    flexDirection: 'row',
+  }
 }) {
   const borderColor =
     Platform.OS === 'android' ? 'rgba(255,255,255,0.20)' : colors.border
@@ -49,7 +52,7 @@ export default function GlassBox({
           ]}
         />
 
-        <View style={{ padding }}>{children}</View>
+        <View style={[childrenStyle,{ padding }]}>{children}</View>
       </View>
     </View>
   )
@@ -72,4 +75,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: 'transparent',
   },
+  children: {
+    display: 'flex',
+    flexDirection: 'row',
+  }
 })
