@@ -53,7 +53,7 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.bgStart }}>
+    <View style={{ flex: 1, backgroundColor: '#272C61' }}>
 
       <SafeAreaView style={{ flex: 1 }}>
         {/* Header */}

@@ -1,9 +1,9 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import { Canvas, RadialGradient, Rect, vec } from '@shopify/react-native-skia'
 import { useRouter } from 'expo-router'
 import { useMemo, useRef, useState } from 'react'
 import { Animated, Dimensions, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import AvatarButton from '../../../components/AvatarButton'
 import GlassBox from '../../../components/GlassBox'
@@ -11,23 +11,23 @@ import { colors } from '../../../styles/colors'
 import { typography } from '../../../styles/typography'
 
 const COLLAPSED_PERCENT = 0.4
-const { height: WIN_H } = Dimensions.get('window')
+const { height: WIN_H, width: WIN_W } = Dimensions.get('window')
 const SEARCH_BOTTOM = Math.round(WIN_H * COLLAPSED_PERCENT) + 12
 
 // Región inicial (Managua aprox.)
-const INITIAL_REGION = {
-  latitude: 12.136389,
-  longitude: -86.251389,
-  latitudeDelta: 0.05,
-  longitudeDelta: 0.05,
-}
+// const INITIAL_REGION = {
+//   latitude: 12.136389,
+//   longitude: -86.251389,
+//   latitudeDelta: 0.05,
+//   longitudeDelta: 0.05,
+// }
 
 // Estilo opcional del mapa (oscuro suave)
-const MAP_STYLE = [
-  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-]
+// const MAP_STYLE = [
+//   { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+//   { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+//   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+// ]
 
 export default function Home() {
   const router = useRouter()
@@ -53,7 +53,7 @@ export default function Home() {
 
   const trips = [
     { id: 1, from: 'San judas',        to: 'UNIVERSIDAD',         time: 'Hace 2h' },
-    { id: 2, from: 'Mercado Oriental', to: 'Metrocentro',    time: 'Ayer' },
+    { id: 2, from: 'Mercado Oriental', to: 'Metrocentro',    time: 'Ayer'},
     { id: 3, from: 'Ticuantepe',       to: 'Managua centro', time: 'Lunes' },
   ]
 
@@ -64,17 +64,35 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      {/* 🗺️ MAPA como fondo */}
-      <MapView
-        style={StyleSheet.absoluteFill}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={INITIAL_REGION}
-        showsUserLocation
-        showsMyLocationButton={false}
-        customMapStyle={MAP_STYLE}
-        toolbarEnabled={false}
-        rotateEnabled={false}
-      />
+      {/* 🎨 Skia Gradient Background */}
+      <Canvas style={StyleSheet.absoluteFill} pointerEvents="none">
+        <Rect x={0} y={0} width={WIN_W} height={WIN_H}>
+          <RadialGradient
+            c={vec(WIN_W, WIN_H)}
+            r={WIN_W}
+            colors={['#303668']}
+            positions={[1]}
+          />
+        </Rect>
+        
+        <Rect x={0} y={0} width={WIN_W} height={WIN_H}>
+          <RadialGradient
+            c={vec(WIN_W * 1.1, WIN_H * 0.1)}
+            r={WIN_W * 1.2}
+            colors={['#b5b26b', 'transparent']}
+            positions={[0.05, 0.95]}
+          />
+        </Rect>
+
+        <Rect x={0} y={0} width={WIN_W} height={WIN_H}>
+          <RadialGradient
+            c={vec(WIN_W * -0.5, WIN_H * -0.05)}
+            r={WIN_W * 1.5}
+            colors={['#42769e', 'transparent']}
+            positions={[0.6, 1]}
+          />
+        </Rect>
+      </Canvas>
 
       {/* 🔝 Capa de UI encima del mapa */}
       <SafeAreaView style={{ flex: 1 }} pointerEvents="box-none">

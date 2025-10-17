@@ -1,13 +1,13 @@
-// app/(drawer)/(tabs)/reports.js
+// app/(drawer)/reports.js
 import React, { useMemo, useRef, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-
-import GlassBox from '../../../components/GlassBox'
-import { colors } from '../../../styles/colors'
-import { typography } from '../../../styles/typography'
+import { useRouter } from 'expo-router'
+import GlassBox from '../../components/GlassBox'
+import { colors } from '../../styles/colors'
+import { typography } from '../../styles/typography'
 
 const CATEGORIES = [
   { key: 'delay', label: 'Retraso', icon: 'clock-alert' },
@@ -28,6 +28,8 @@ export default function ReportsScreen() {
 
   const sheetRef = useRef(null)
   const snapPoints = useMemo(() => ['45%', '80%'], [])
+
+  const router = useRouter()
 
   const onSubmit = () => {
     if (!message.trim()) {
@@ -50,44 +52,52 @@ export default function ReportsScreen() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <SafeAreaView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={{ flex: 1 }}>
             {/* Header */}
-            <View style={styles.header}>
-              <Text style={[typography.h1, { color: colors.white }]}>Reportes ciudadanos</Text>
-              <Text style={[typography.small, { color: colors.textSoft }]}>
-                Retrasos, accidentes, desvíos, estado de unidades o seguridad.
-              </Text>
-            </View>
+           <View style={styles.header}>
+  <Text style={[typography.h1, { color: '#313668' }]}>
+    Reportes ciudadanos
+  </Text>
+
+  <TouchableOpacity
+    style={styles.headerBtn}
+    onPress={() => router.push('/home')}
+  >
+    <MaterialCommunityIcons name="arrow-left" size={18} color="#fff" />
+    <Text style={styles.headerBtnText}>Inicio</Text>
+  </TouchableOpacity>
+</View>
 
             {/* Formulario */}
             <View style={{ paddingHorizontal: 16 }}>
-              <GlassBox radius={16} padding={12} intensity={28} shadow={false} style={{ marginBottom: 12 }}>
-                <Text style={[typography.h2, { color: colors.white, marginBottom: 8 }]}>Crear reporte</Text>
-
+              <GlassBox
+                borderRadius={16}
+                padding={12}
+                intensity={Platform.OS === 'android' ? 40 : 32}
+                 style={styles.card}
+                 childrenStyle={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
+                <Text style={[typography.h2, { color: '#313668', marginTop: -20, marginBottom: -5 }]}>Crear reporte</Text>
                 {/* Categorías */}
-                <View style={styles.catRow}>
-                  {CATEGORIES.map((c) => {
-                    const active = c.key === selected
-                    return (
-                      <TouchableOpacity
-                        key={c.key}
-                        style={[styles.catChip, active && styles.catChipActive]}
-                        onPress={() => setSelected(c.key)}
-                        activeOpacity={0.9}
-                      >
-                        <MaterialCommunityIcons
-                          name={c.icon}
-                          size={18}
-                          color={active ? colors.white : colors.secondary}
-                        />
-                        <Text style={[styles.catText, active && styles.catTextActive]}>{c.label}</Text>
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
+              <View style={styles.catRow}>
+  {CATEGORIES.map((c) => {
+    const active = c.key === selected
+    const extraStyle = c.key === 'condition' ? { marginLeft: 40 } : {} 
+    return (
+      <TouchableOpacity
+        key={c.key}
+        style={[styles.catChip, active && styles.catChipActive, extraStyle]} 
+        onPress={() => setSelected(c.key)}
+        activeOpacity={0.9}
+      >
+        <MaterialCommunityIcons name={c.icon} size={18} color="#fff" />
+        <Text style={[styles.catText, active && styles.catTextActive]}>{c.label}</Text>
+      </TouchableOpacity>
+    )
+  })}
+</View>
 
                 {/* Ruta / unidad */}
                 <TextInput
@@ -95,8 +105,8 @@ export default function ReportsScreen() {
                   value={route}
                   onChangeText={setRoute}
                   placeholder="Ruta o unidad (opcional)"
-                  placeholderTextColor={colors.textSoft}
-                  style={styles.input}
+                  placeholderTextColor="#000"
+                  style={[styles.input, { marginTop: -15}]}
                   returnKeyType="next"
                   blurOnSubmit={false}
                   onSubmitEditing={() => messageRef.current?.focus()}
@@ -108,8 +118,8 @@ export default function ReportsScreen() {
                   value={message}
                   onChangeText={setMessage}
                   placeholder="Describe lo ocurrido (lugar, hora, referencia)…"
-                  placeholderTextColor={colors.textSoft}
-                  style={[styles.input, { height: 96, textAlignVertical: 'top' }]}
+                  placeholderTextColor="#000"
+                  style={[styles.input, { height: 70, marginTop: -10, textAlignVertical: 'top' }]}
                   multiline
                   returnKeyType="done"
                   blurOnSubmit={true}
@@ -182,56 +192,121 @@ export default function ReportsScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 },
-  catRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
-  catChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: colors.cardAlt,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  catChipActive: {
-    backgroundColor: '#092235',
-    borderColor: 'rgba(255,255,255,0.08)',
-  },
-  catText: { color: colors.secondary, fontWeight: '700', fontSize: 12 },
-  catTextActive: { color: colors.white },
+ header: {
+  paddingHorizontal: 16,
+  paddingTop: Platform.OS === 'android' ? 16 : 8,
+  paddingBottom: 8,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-start', // 👈 en vez de 'space-between'
+  gap: 10, // separa el botón del título
+},
+
+  catRow: {
+  flexDirection: 'row-reverse',
+  flexWrap: 'wrap',
+  gap: 8,
+  marginBottom: 12,
+  justifyContent: 'space-between',
+},
+catChip: {
+  flexDirection: 'row',      
+  alignItems: 'center',      // centra verticalmente icono y texto
+  gap: 6,
+  paddingHorizontal: 10,
+  paddingVertical: 8,
+  borderRadius: 99,
+  backgroundColor: '#89A7BD',
+  borderWidth: 1,
+  borderColor: colors.border,
+  width: '30%',
+  justifyContent: 'center',  // centra ambos en el eje horizontal
+},
+catChipActive: {
+  backgroundColor: '#0d395aff',
+  borderColor: 'rgba(255,255,255,0.08)',
+},
+catText: {
+  color: '#fff',
+  fontWeight: '700',
+  fontSize: 12,
+},
+catTextActive: {
+  color: colors.white,
+},
   input: {
     backgroundColor: 'rgba(255,255,255,0.06)',
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
+    borderRadius: 15,
     paddingHorizontal: 12,
     paddingVertical: 10,
     color: colors.white,
     marginBottom: 10,
   },
-  submitBtn: {
-    marginTop: 6,
-    backgroundColor: colors.primary,
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    gap: 8,
-    ...(Platform.OS === 'android'
-      ? { elevation: 3 }
-      : { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } }),
-  },
+ submitBtn: {
+  marginTop: -2, // antes 6, sube el botón
+  backgroundColor: '#889fafff',
+  borderRadius: 12,
+  paddingVertical: 12,
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'row',
+  gap: 8,
+  ...(Platform.OS === 'android'
+    ? { elevation: 3 }
+    : { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } }),
+},
   submitText: { color: colors.white, fontWeight: '700' },
   sheetBackground: {
-    backgroundColor: colors.panel,
+    backgroundColor: '#364d5eff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
     borderColor: colors.border,
     ...(Platform.OS === 'android' ? { elevation: 10 } : {}),
   },
-  titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  
+  titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12
+   },
+   card: {
+  display: 'flex',
+  flexDirection: 'column',
+  borderWidth: 1.5,
+  borderColor: colors.border,
+  width: '100%',
+  borderRadius: 30,
+  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  alignSelf: 'center',
+  padding: 8,
+  justifyContent: 'center',
+  alignItems: 'center',
+  transform: [{ scale: 1 }], // 👈 escala todo el bloque y su contenido
+  
+},
+headerBtn: {
+  flexDirection: 'row',
+  alignItems: 'stretch',
+  backgroundColor: '#89A7BD',
+  paddingHorizontal: 12,
+  paddingVertical: 4,
+  borderRadius: 40,
+  transform: [{ translateY: 5 }],
+  gap: 5,
+  width: 80,
+  height: 30,
+  ...(Platform.OS === 'android'
+    ? { elevation: 3 }
+    : {
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 3 },
+      }),
+},
+headerBtnText: {
+  color: '#fff',
+  fontWeight: '600',
+  fontSize: 13,
+},
 })

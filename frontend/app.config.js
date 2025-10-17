@@ -21,6 +21,7 @@ export default {
       },
     },
     android: {
+      package: 'com.anonymous.enruta',
       adaptiveIcon: {
         backgroundColor: '#E6F4FE',
         foregroundImage: './assets/images/android-icon-foreground.png',

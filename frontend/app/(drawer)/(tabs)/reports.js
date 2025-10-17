@@ -81,7 +81,8 @@ export default function ReportsScreen() {
                         <MaterialCommunityIcons
                           name={c.icon}
                           size={18}
-                          color={active ? colors.white : colors.secondary}
+                          
+                          color="#fff"
                         />
                         <Text style={[styles.catText, active && styles.catTextActive]}>{c.label}</Text>
                       </TouchableOpacity>
