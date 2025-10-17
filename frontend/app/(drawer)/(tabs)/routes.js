@@ -1,13 +1,12 @@
 // app/(drawer)/(tabs)/routes.js
-import React, { useMemo, useRef, useState, useEffect } from 'react'
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Platform, Keyboard } from 'react-native'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
 import { BlurView } from 'expo-blur'
+import { useRouter } from 'expo-router'
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import GlassBox from '../../../components/GlassBox'
 import AvatarButton from '../../../components/AvatarButton'
+import GlassBox from '../../../components/GlassBox'
 import { colors } from '../../../styles/colors'
 
 /* ==== Datos (puedes ampliar libremente) ==== */
@@ -103,6 +102,7 @@ function RouteCard({ item }) {
 export default function RoutesScreen() {
   const insets = useSafeAreaInsets()
   const router = useRouter()
+  const yellowArtifact = require('../../../assets/images/Artifact.png')
 
   // 🔎 buscador
   const [searchOpen, setSearchOpen] = useState(false)
@@ -134,50 +134,90 @@ export default function RoutesScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      {/* ===== Header ===== */}
+      <Image source={yellowArtifact} style={{
+        position: 'absolute',
+        width: 200,
+        height: 225,
+        top: -50,
+        left: -45,
+        transform: [{ rotate: '200deg' }]
+      }}/>
+      <Image source={yellowArtifact} style={{
+        position: 'absolute',
+        width: 200,
+        height: 225,
+        top: '28%',
+        right: -105,
+        transform: [{ rotate: '-30deg' }]
+      }}/>
+      <Image source={yellowArtifact} style={{
+        position: 'absolute',
+        width: 275,
+        height: 325,
+        bottom: -110,
+        left: 0,
+        transform: [{ rotate: '55deg' }],
+        objectFit: 'contain'
+      }}/>
+      {/* ===== Header “vidrio” con menos espacio arriba ===== */}
       <View style={[styles.headerRow, { paddingTop: Math.max(insets.top - 4, 8) }]}>
-        <BlurView intensity={35} tint="light" style={styles.blurCircle}>
-          <AvatarButton size={42} uri={null} onPress={() => router.push('/(drawer)/profile')} />
+        
+        {/* Perfil (blur circle) */}
+        <BlurView intensity={35} tint="extraLight" style={styles.blurCircle}>
+          <AvatarButton
+            size={90}
+            uri={null}
+            bgColor='rgba(255,255,255,0.35)'
+            iconColor='rgba(255,255,255, 0.85)'
+            onPress={() => router.push('/(drawer)/profile')}
+            outline={true}
+          />
         </BlurView>
 
-        <BlurView intensity={Platform.OS === 'android' ? 20 : 35} tint="light" style={styles.blurCard}>
-          {searchOpen ? (
-            <View style={styles.searchRow}>
-              <MaterialCommunityIcons name="magnify" size={18} color="#3E516A" />
-              <TextInput
-                ref={inputRef}
-                value={query}
-                onChangeText={setQuery}
-                placeholder="Buscar ruta por número, nombre o recorrido…"
-                placeholderTextColor="#3E516A"
-                style={styles.searchInput}
-                returnKeyType="search"
-              />
-            </View>
-          ) : (
-            <>
-              <Text style={styles.menuTitle}>Menú de Rutas</Text>
-              <Text style={styles.menuSubtitle}>Explora y elige tu recorrido</Text>
-            </>
-          )}
+        {/* Centro: tarjeta blur con título */}
+        <BlurView intensity={35} tint="light" style={styles.blurCard}>
+          <View style={styles.blurCardInner}>
+            <Text style={styles.menuTitle}>El dorado → Los Robles</Text>
+            <Text style={styles.menuSubtitle}>Ruta 105 - 15 min</Text>
+          </View>
+          {/* Buscar (blur circle) */}
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => {}}
+          >
+            <BlurView intensity={35} tint="light" style={[styles.blurCircle, { boxShadow: 'none', marginRight: 3 }]}>
+              <MaterialCommunityIcons name="magnify" size={22} color={colors.white} />
+            </BlurView>
+          </TouchableOpacity>
         </BlurView>
 
-        <TouchableOpacity activeOpacity={0.85} onPress={toggleSearch}>
-          <BlurView intensity={35} tint="light" style={styles.blurCircle}>
-            <MaterialCommunityIcons name={searchOpen ? 'close' : 'magnify'} size={22} color={colors.secondary} />
-          </BlurView>
-        </TouchableOpacity>
       </View>
 
       {/* ===== Lista ===== */}
-      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: 16, paddingBottom: 140 }}>
-        {filtered.map((item) => <RouteCard key={item.id} item={item} />)}
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 90 }}>
+        {DATA.map((item) => (
+          <View key={item.id} style={styles.cardWrap}>
+            <View style={styles.rowTop}>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{item.id}</Text>
+                <MaterialCommunityIcons name="clock-check-outline" size={18} color="#FFF" />
+              </View>
+            </View>
 
-        {filtered.length === 0 && (
-          <Text style={{ textAlign: 'center', color: '#3E516A', marginTop: 24 }}>
-            No se encontraron rutas para “{query}”.
-          </Text>
-        )}
+            <GlassBox radius={18} padding={14} shadow={Platform.OS === 'android'} style={styles.infoBox}>
+              <View style={{ flex: 1, marginStart: 12 }}>
+                <Text style={styles.routeTitle} numberOfLines={6}>{item.title}</Text>
+                <Text style={styles.routePath} numberOfLines={6}>
+                  {item.path} <Text style={styles.more}>Ver más</Text>
+                </Text>
+              </View>
+
+              <TouchableOpacity style={styles.airBtn}>
+                <MaterialCommunityIcons name="send" size={20} color="#1C325B" />
+              </TouchableOpacity>
+            </GlassBox>
+          </View>
+        ))}
       </ScrollView>
     </SafeAreaView>
   )
@@ -186,7 +226,7 @@ export default function RoutesScreen() {
 /** Colores base del mock */
 const YELLOW = '#F4E791'
 const YELLOW_DEEP = '#E6DA7F'
-const BLUE_CARD = '#4B87B0'
+const BLUE_CARD = '#8fbac1'
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: YELLOW },
@@ -197,29 +237,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
     paddingHorizontal: 16,
-    marginBottom: 6,
+    marginRight: 25,
   },
   blurCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#00000010',
     ...Platform.select({
       ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8, shadowOffset: { width: 0, height: 4 } },
-      android: { elevation: 3 },
+      android: { elevation: 0 },
     }),
+    boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.25)',
   },
   blurCard: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 16,
+    paddingVertical: 6,
+    borderRadius: 100,
     alignItems: 'center',
-    justifyContent: 'center',
     overflow: 'hidden',
     backgroundColor: 'transparent',
     borderWidth: 0,
@@ -227,9 +270,30 @@ const styles = StyleSheet.create({
       ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
       android: { elevation: 0 },
     }),
+    boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.25)',
   },
-  menuTitle: { color: '#1B2B4B', fontSize: 18, fontWeight: '800', textAlign: 'center' },
-  menuSubtitle: { color: '#3E516A', fontSize: 12, textAlign: 'center', marginTop: 2 },
+  blurCardInner: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    alignItems: 'center',
+    color: '#FFF',
+    marginLeft: 20,
+    padding: 0
+  },
+  menuTitle: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  menuSubtitle: {
+    color: '#FFF',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 2,
+    fontWeight: '200'
+  },
 
   // 🔎 buscador
   searchRow: { flexDirection: 'row', alignItems: 'center', gap: 8, width: '100%' },
@@ -246,14 +310,21 @@ const styles = StyleSheet.create({
       android: { elevation: 3 },
     }),
   },
-  rowTop: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 10 },
+  rowTop: { flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    gap: 10,
+  },
   badge: {
-    backgroundColor: '#E7EDC9',
+    flexDirection: 'row',
+    gap: 15,
+    backgroundColor: '#96a996',
     paddingHorizontal: 14,
     height: 36,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.4)',
   },
   badgeText: { color: '#4B5A43', fontWeight: '900', fontSize: 16 },
   badgeRound: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#E7EDC9', alignItems: 'center', justifyContent: 'center' },
@@ -263,11 +334,13 @@ const styles = StyleSheet.create({
   routePath: { color: '#10324A', fontSize: 13, lineHeight: 18 },
   more: { color: '#0B2C6E', fontWeight: '900' }, // aparece solo si lineCount>2
   airBtn: {
-    marginLeft: 10,
+    marginRight: -10,
     alignSelf: 'center',
-    width: 42, height: 42, borderRadius: 21,
-    backgroundColor: '#EAEFF7',
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: '#C5D3EA',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })

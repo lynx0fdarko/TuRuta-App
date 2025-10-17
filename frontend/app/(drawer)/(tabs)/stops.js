@@ -14,7 +14,7 @@ export default function StopsScreen() {
   const [loading, setLoading] = useState(true)
   const [stops, setStops] = useState([
     { id: '1', name: 'Parada Central', lat: 12.13282, lng: -86.2504, nextBus: '08:15 AM' },
-    { id: '2', name: 'Universidad UNICIT', lat: 12.125, lng: -86.265, nextBus: '08:22 AM' },
+    { id: '2', name: 'UNIVERSIDAD', lat: 12.125, lng: -86.265, nextBus: '08:22 AM' },
     { id: '3', name: 'Mercado Oriental', lat: 12.1402, lng: -86.2701, nextBus: '08:30 AM' },
   ])
   const bottomSheetRef = useRef(null)

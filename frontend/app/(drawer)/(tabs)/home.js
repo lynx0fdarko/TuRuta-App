@@ -1,17 +1,17 @@
-import React, { useRef, useMemo, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native'
-import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import BottomSheet, { BottomSheetBackdrop, BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { useRouter } from 'expo-router'
+import { useMemo, useRef, useState } from 'react'
+import { Animated, Dimensions, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
-
-import GlassBox from '../../../components/GlassBox'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import AvatarButton from '../../../components/AvatarButton'
+import GlassBox from '../../../components/GlassBox'
 import { colors } from '../../../styles/colors'
 import { typography } from '../../../styles/typography'
+import { Background } from '@react-navigation/elements'
 
-const COLLAPSED_PERCENT = 0.40
+const COLLAPSED_PERCENT = 0.4
 const { height: WIN_H } = Dimensions.get('window')
 const SEARCH_BOTTOM = Math.round(WIN_H * COLLAPSED_PERCENT) + 12
 
@@ -36,31 +36,36 @@ export default function Home() {
   const bottomSheetRef = useRef(null)
   const snapPoints = useMemo(() => ['40%', '75%'], [])
   const [tab, setTab] = useState('recent') // 'recent' | 'favorites'
+  const fadeAnimRef = useRef(new Animated.Value(1))
+  const fadeAnim = fadeAnimRef.current
+  
+  // Callback cuando el BottomSheet cambia de snap point
+  const handleAnimate = (fromIndex, toIndex) => {
+    console.log('🎬 Animando desde', fromIndex, 'hacia', toIndex)
+    // toIndex: -1 (cerrado), 0 (40%), 1 (75%)
+    const targetOpacity = toIndex === 0 ? 1 : 0
+    
+    Animated.timing(fadeAnimRef.current, {
+      toValue: targetOpacity,
+      duration: 0.01,
+      useNativeDriver: true,
+    }).start()
+  }
 
   const trips = [
-    { id: 1, from: 'San judas',        to: 'UNICIT',         time: 'Hace 2h' },
+    { id: 1, from: 'San judas',        to: 'UNIVERSIDAD',         time: 'Hace 2h' },
     { id: 2, from: 'Mercado Oriental', to: 'Metrocentro',    time: 'Ayer' },
     { id: 3, from: 'Ticuantepe',       to: 'Managua centro', time: 'Lunes' },
   ]
 
   const favorites = [
-    { id: 'f1', from: 'UNICIT', to: 'Galerías Santo Domingo' },
-    { id: 'f2', from: 'UNICIT', to: 'La Plancha, El Carmen' },
+    { id: 'f1', from: 'UNIVERSIDAD', to: 'Galerías Santo Domingo' },
+    { id: 'f2', from: 'UNIVERSIDAD', to: 'La Plancha, El Carmen' },
   ]
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      {/* 🗺️ MAPA como fondo */}
-      <MapView
-        style={StyleSheet.absoluteFill}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={INITIAL_REGION}
-        showsUserLocation
-        showsMyLocationButton={false}
-        customMapStyle={MAP_STYLE}
-        toolbarEnabled={false}
-        rotateEnabled={false}
-      />
+    <View style={{ flex: 1, backgroundColor: colors.bgStart }}>
+  
 
       {/* 🔝 Capa de UI encima del mapa */}
       <SafeAreaView style={{ flex: 1 }} pointerEvents="box-none">
@@ -75,11 +80,15 @@ export default function Home() {
             top: insets.top + 4,
             zIndex: 100,
           }}
+          outline={true}
         />
 
         {/* Buscador ANCLADO al borde superior del sheet */}
         <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
-          <View style={[styles.searchAnchor, { bottom: SEARCH_BOTTOM }]}>
+          <Animated.View style={[styles.searchAnchor, {
+            bottom: SEARCH_BOTTOM,
+            opacity: fadeAnim,
+          }]}>
             <GlassBox
               radius={16}
               padding={8}
@@ -88,19 +97,21 @@ export default function Home() {
               style={styles.searchGlass}
             >
               <View style={styles.searchBox}>
-                <TextInput
-                  placeholder="¿A dónde vas?"
-                  placeholderTextColor={colors.textSoft}
-                  style={styles.searchInput}
-                  returnKeyType="search"
-                  underlineColorAndroid="transparent"
-                />
+                <View style={{ flex: 1, alignItems: 'center', marginLeft: 32 }}>
+                  <TextInput
+                    placeholder="¿A dónde vas?"
+                    placeholderTextColor={colors.textSoft}
+                    style={styles.searchInput}
+                    returnKeyType="search"
+                    underlineColorAndroid="transparent"
+                  />
+                </View>
                 <TouchableOpacity style={styles.searchCircle}>
                   <MaterialCommunityIcons name="magnify" size={22} color={colors.white} />
                 </TouchableOpacity>
               </View>
             </GlassBox>
-          </View>
+          </Animated.View>
         </View>
 
         {/* BottomSheet (el panel cubre el buscador al subir) */}
@@ -108,6 +119,7 @@ export default function Home() {
           ref={bottomSheetRef}
           snapPoints={snapPoints}
           index={0}
+          onAnimate={handleAnimate}
           backgroundStyle={styles.sheetBackground}
           handleIndicatorStyle={{ backgroundColor: colors.handle }}
           backdropComponent={(props) => (
@@ -180,6 +192,7 @@ export default function Home() {
                   intensity={28}
                   shadow={false}
                   style={{ marginBottom: 12 }}
+                  childrenStyle={{}}
                 >
                   <View style={styles.card}>
                     <MaterialCommunityIcons name="map-marker-path" size={24} color={colors.primary} />
@@ -206,34 +219,42 @@ export default function Home() {
 const styles = StyleSheet.create({
   // Buscador anclado arriba del sheet
   searchAnchor: {
+    width: '100%',
     position: 'absolute',
-    left: 0, right: 0,
-    alignItems: 'center',
+    // left: 0, right: 0,
+    // alignItems: 'center',
     zIndex: 20,
   },
   searchGlass: {
-    width: '92%',
-    maxWidth: 600,
+    position: 'relative',
+    margin: 'auto',
+    marginBottom: 40,
+    width: '85%',
     height: 56,
+    backgroundColor: '#39527b',
   },
   searchBox: {
+    display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 12,
-    height: '100%',
   },
   searchInput: {
-    flex: 1,
-    minWidth: 0,
-    height: '100%',
-    fontSize: 16,
-    color: colors.white,
+    // flex: 1,
+    // minWidth: 0,
+    // height: '100%',
+    fontSize: 18,
+    // color: colors.white,
     textAlign: 'center',
   },
   searchCircle: {
-    width: 42, height: 42, borderRadius: 21,
-    alignItems: 'center', justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.22)',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#314f69',
     marginLeft: 8,
   },
 

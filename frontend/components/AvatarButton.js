@@ -1,12 +1,13 @@
-import React, { memo } from 'react'
-import { Pressable, View, Image, StyleSheet, Platform } from 'react-native'
+
 import { LinearGradient } from 'expo-linear-gradient'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { colors } from '../styles/colors'
+import PropTypes from 'prop-types'
+import { memo } from 'react'
+import { Image, Platform, Pressable, StyleSheet, View } from 'react-native'
+import { AccountSvgIcon } from './icons/SvgIcons'
 
 /**
  * AvatarButton
- * - Muestra foto (uri) o ícono.
+ * - Muestra foto (uri) o ícono SVG personalizado.
  * - Estilo circular con sombra, borde suave y brillo superior.
  * - onPress navega al perfil si no se provee otro handler.
  */
@@ -17,6 +18,7 @@ function AvatarButton({
   containerStyle,
   bgColor = '#86A8C9',            // azul suave del botón
   iconColor = '#FFFFFF',
+  outline = false,                // Si true, muestra solo bordes del ícono
 }) {
   const radius = size / 2
   const iconSize = Math.round(size * 0.5)
@@ -44,7 +46,7 @@ function AvatarButton({
           {
             width: size,
             height: size,
-            borderRadius: radius,
+            borderRadius: '100%',
             backgroundColor: bgColor,
             borderColor: 'rgba(255,255,255,0.35)', // borde fino translúcido
           },
@@ -76,7 +78,11 @@ function AvatarButton({
             }}
           />
         ) : (
-          <MaterialCommunityIcons name="account" size={iconSize} color={iconColor} />
+          <AccountSvgIcon 
+            size={iconSize} 
+            color={iconColor} 
+            outline={outline}
+          />
         )}
       </View>
     </Pressable>
@@ -94,7 +100,7 @@ const styles = StyleSheet.create({
         shadowRadius: 12,
         shadowOffset: { width: 0, height: 8 },
       },
-      android: { elevation: 8 },
+      android: { elevation: 1 },
     }),
   },
   circle: {
@@ -109,7 +115,32 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: '60%', // brillo solo arriba
-  },
+  }
 })
+
+// Validación de props para AvatarButton
+AvatarButton.propTypes = {
+  uri: PropTypes.string,                    // URL de la imagen del avatar (opcional)
+  size: PropTypes.number,                   // Tamaño del avatar en píxeles
+  onPress: PropTypes.func,                  // Función a ejecutar al presionar
+  containerStyle: PropTypes.oneOfType([    // Estilos adicionales del contenedor
+    PropTypes.object,
+    PropTypes.array
+  ]),
+  bgColor: PropTypes.string,                // Color de fondo del avatar
+  iconColor: PropTypes.string,              // Color del ícono por defecto
+  outline: PropTypes.bool,                  // Si true, muestra solo bordes del ícono
+}
+
+// Valores por defecto
+AvatarButton.defaultProps = {
+  uri: null,
+  size: 56,
+  onPress: undefined,
+  containerStyle: {},
+  bgColor: '#86A8C9',
+  iconColor: '#FFFFFF',
+  outline: false,
+}
 
 export default memo(AvatarButton)
