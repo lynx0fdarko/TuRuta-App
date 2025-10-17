@@ -1,13 +1,13 @@
-// app/(drawer)/reports.js
+// app/(drawer)/(tabs)/reports.js
 import React, { useMemo, useRef, useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native'
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-import GlassBox from '../../components/GlassBox'
-import { colors } from '../../styles/colors'
-import { typography } from '../../styles/typography'
+import GlassBox from '../../../components/GlassBox'
+import { colors } from '../../../styles/colors'
+import { typography } from '../../../styles/typography'
 
 const CATEGORIES = [
   { key: 'delay', label: 'Retraso', icon: 'clock-alert' },
@@ -195,7 +195,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  catChipActive: { backgroundColor: '#092235', borderColor: 'rgba(255,255,255,0.08)' },
+  catChipActive: {
+    backgroundColor: '#092235',
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
   catText: { color: colors.secondary, fontWeight: '700', fontSize: 12 },
   catTextActive: { color: colors.white },
   input: {
