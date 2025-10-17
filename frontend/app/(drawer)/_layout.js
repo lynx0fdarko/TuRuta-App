@@ -59,18 +59,7 @@ export default function DrawerLayout() {
         }}
       />
 
-      {/* ✅ Nuevo: Noticias */}
-      <Drawer.Screen
-        name="news"
-        options={{
-          drawerLabel: 'Noticias',
-          drawerIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="newspaper-variant-outline" color={color} size={size} />
-          ),
-        }}
-      />
-
-      {/* Reportes ciudadanos */}
+      {/* Reportes ciudadanos (moverlo aquí) */}
       <Drawer.Screen
         name="reports"
         options={{

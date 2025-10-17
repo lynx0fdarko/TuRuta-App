@@ -9,128 +9,37 @@ import AvatarButton from '../../../components/AvatarButton'
 import GlassBox from '../../../components/GlassBox'
 import { colors } from '../../../styles/colors'
 
-/* ==== Datos (puedes ampliar libremente) ==== */
 const DATA = [
-  { id: '101', title: 'Mercado Mayoreo ↔ Las Brisas',
-    path: 'Mercado Mayoreo > Semáforos Mayoreo > Laureles Norte (Entrada N) > Palí Las Américas > El Madroño > Colegio Inmaculada > Concepción de María > Las Brisas' },
-  { id: '102', title: 'Mercado Mayoreo ↔ Acahualinca',
-    path: 'Mercado Mayoreo > Av. de las Milicias > Hospital Salud Integral > Rotonda El Güegüense > Parque Mennen > Mercado Oriental > Huellas de Acahualinca' },
-  { id: '103', title: 'Laureles Sur ↔ Hospital Lenín Fonseca',
-    path: 'Laureles Sur > Linda Vista Sur > Universidad Paulo Freire > El Seminario > ENACAL > INIFOM > Hospital Lenín Fonseca' },
-  { id: '106', title: 'Berrtha Díaz ↔ El Seminario',
-    path: 'Berrtha Díaz > Café Soluble > Subasta > Los Rieles > Pista El Mayoreo > Semáforos Mayoreo > El Seminario' },
-  { id: '107', title: 'Camilo Ortega ↔ Mercado Oriental',
-    path: 'Camilo Ortega > El Panal > El Redentor > Plaza Inter > Estadio Cranshaw > Mercado Oriental' },
-  { id: '114', title: 'Rubenia ↔ Mercado Oriental',
-    path: 'Rubenia > UdeM > Colonia Centroamérica > Rotonda El Güegüense > Mercado Oriental' },
-  { id: '117', title: 'Villa José Benito Escobar ↔ Universidad Casimiro Sotelo',
-    path: 'Villa J. B. Escobar > Cancha Benito Escobar > Colegio Las Américas > El Molino > Transagro > Pali Las Mercedes > U. Casimiro Sotelo' },
-  { id: '118', title: 'Villa Libertad ↔ Cuesta el Plomo',
-    path: 'Villa Libertad > Ixchen > La Sábana > Farmacia Villa Venezuela > 14 de Septiembre > Rotonda Cristo Rey > El Plomo' },
-  { id: '119', title: 'Cuesta el Plomo ↔ Villa Fraternidad',
-    path: 'Cuesta el Plomo Sur > INIFOM > Linda Vista Sur > Sagrado Corazón > Camilo Ortega > Villa Fraternidad' },
-  { id: '120', title: 'Mercado Mayoreo ↔ El Seminario',
-    path: 'Mercado Mayoreo > Semáforo Mayoreo > Autos Flores > MATEPSA > Howard > Maxi Palí La Reynaga > El Seminario' },
-  { id: '175', title: 'Memorial Sandino ↔ Laureles Norte',
-    path: 'Memorial Sandino > UNAN > Rotonda Rubenia > 7 Sur > Laureles Norte' },
-  { id: '195', title: 'Milagro de Dios ↔ Parque Central',
-    path: 'Milagro de Dios > Terminal 110 > Jorge Dimitrov > Parque Luis Alfonso > Parque Central' },
-  { id: '210', title: 'Ciudad Sandino (Villa Soberana) ↔ Catedral',
-    path: 'Villa Soberana > Ciudad Sandino > 7 Sur > Carretera Nueva a León > Antigua Casa Presidencial > Catedral de Managua' },
-  { id: '261', title: 'Villa Roma ↔ Barrio Santa Rosa (MR4)',
-    path: 'Villa Roma > Rubenia > UPOLI > Mercado Iván Montenegro > Rotonda La Virgen > Santa Rosa' },
-  { id: '262', title: 'Comarca Los Vanegas ↔ INATEC',
-    path: 'Los Vanegas > Monte Fresco > El Dorado > Sitel > ENEL Central > INATEC' },
-  { id: '266', title: 'Las Mercedes ↔ Mercado Oriental',
-    path: 'Las Mercedes > Aeropuerto > Carretera Norte > Rotonda El Güegüense > Mercado Oriental' },
-]
-
-/* ==== Tarjeta de ruta con "Ver más" solo cuando hace falta ==== */
-function RouteCard({ item }) {
-  const [expanded, setExpanded] = useState(false)
-  const [measured, setMeasured] = useState(false)
-  const [lineCount, setLineCount] = useState(0)
-
-  // 1ª pasada: medimos sin truncar; luego aplicamos numberOfLines=2 si corresponde
-  const handleTextLayout = (e) => {
-    if (!measured) {
-      setLineCount(e.nativeEvent.lines?.length ?? 0)
-      setMeasured(true)
-    }
+  {
+    id: '117',
+    title: 'Villa José Benito Escobar a Universidad Casimiro Sotelo Montenegro',
+    path:
+      'Villa José Benito Escobar > Cancha Benito Escobar > Colegio Las Américas > El Molino > Transagro > Pali las Mercedes > Entrada las Mercedes...'
+  },
+  {
+    id: '118',
+    title: 'Villa Libertad a Cuesta el plomo',
+    path:
+      'Terminal Laureles Sur > Villa Libertad > Ixchen > La Sábana > Pulpería Meydar > La Chelita > Farmacia Villa Venezuela > Colegio Villa Venezuela...'
+  },
+  {
+    id: '119',
+    title: 'Cuesta el plomo a Villa Fraternidad',
+    path:
+      'Cuesta el Plomo Sur > Clínica Bethel > INIFOM > Centro Comercial Linda Vista > Linda Vista Sur > Pulpería Emmanuel > Fotos Lumintron...'
+  },
+  {
+    id: '120',
+    title: 'Mayoreo a El Seminario',
+    path:
+      'Mercado Mayoreo > Semáforo Mayoreo > Autos flores > MATEPSA > Howard > Maxi Pali La Reynaga > Pulpería Doña Perna > Miguel Gutiérrez...'
   }
-
-  const showToggle = lineCount > 2 // solo mostrar el "Ver más" si realmente se corta
-
-  return (
-    <View style={styles.cardWrap}>
-      <View style={styles.rowTop}>
-        <View style={styles.badge}><Text style={styles.badgeText}>{item.id}</Text></View>
-        <TouchableOpacity style={styles.badgeRound}>
-          <MaterialCommunityIcons name="clock-check-outline" size={18} color="#285D65" />
-        </TouchableOpacity>
-      </View>
-
-      <GlassBox radius={18} padding={14} shadow={Platform.OS === 'android'} style={styles.infoBox}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.routeTitle} numberOfLines={2}>{item.title}</Text>
-
-          <Text
-            style={styles.routePath}
-            onTextLayout={handleTextLayout}
-            numberOfLines={measured && !expanded ? 2 : 0}
-          >
-            {item.path}
-            {showToggle ? (
-              <>
-                {' '}
-                <Text style={styles.more} onPress={() => setExpanded((v) => !v)}>
-                  {expanded ? 'Ver menos' : 'Ver más'}
-                </Text>
-              </>
-            ) : null}
-          </Text>
-        </View>
-
-        <TouchableOpacity style={styles.airBtn}>
-          <MaterialCommunityIcons name="send" size={20} color="#1C325B" />
-        </TouchableOpacity>
-      </GlassBox>
-    </View>
-  )
-}
+]
 
 export default function RoutesScreen() {
   const insets = useSafeAreaInsets()
   const router = useRouter()
   const yellowArtifact = require('../../../assets/images/Artifact.png')
-
-  // 🔎 buscador
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [query, setQuery] = useState('')
-  const inputRef = useRef(null)
-
-  const toggleSearch = () => {
-    if (searchOpen) {
-      setQuery('')
-      setSearchOpen(false)
-      Keyboard.dismiss()
-    } else {
-      setSearchOpen(true)
-      setTimeout(() => inputRef.current?.focus(), 50)
-    }
-  }
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return DATA
-    return DATA.filter(r =>
-      r.id.toLowerCase().includes(q) ||
-      r.title.toLowerCase().includes(q) ||
-      r.path.toLowerCase().includes(q)
-    )
-  }, [query])
-
-  useEffect(() => () => Keyboard.dismiss(), [])
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -264,11 +173,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     overflow: 'hidden',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: '#00000010',
     ...Platform.select({
       ios: { shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
-      android: { elevation: 0 },
+      android: { elevation: 4 },
     }),
     boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.25)',
   },
@@ -295,11 +204,7 @@ const styles = StyleSheet.create({
     fontWeight: '200'
   },
 
-  // 🔎 buscador
-  searchRow: { flexDirection: 'row', alignItems: 'center', gap: 8, width: '100%' },
-  searchInput: { flex: 1, color: '#1B2B4B', paddingVertical: 6, fontSize: 14 },
-
-  /* ===== Lista / tarjetas ===== */
+  /* ===== Lista ===== */
   cardWrap: {
     backgroundColor: YELLOW_DEEP,
     borderRadius: 26,
@@ -326,13 +231,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.4)',
   },
-  badgeText: { color: '#4B5A43', fontWeight: '900', fontSize: 16 },
-  badgeRound: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#E7EDC9', alignItems: 'center', justifyContent: 'center' },
-
-  infoBox: { backgroundColor: BLUE_CARD + 'D6' },
-  routeTitle: { color: '#10324A', fontSize: 16, fontWeight: '800', marginBottom: 6 },
-  routePath: { color: '#10324A', fontSize: 13, lineHeight: 18 },
-  more: { color: '#0B2C6E', fontWeight: '900' }, // aparece solo si lineCount>2
+  badgeText: { color: '#303959', fontWeight: '900', fontSize: 16 },
+  badgeRound: {
+    width: 36, height: 36, borderRadius: 18,
+    backgroundColor: '#E7EDC9',
+    alignItems: 'center', justifyContent: 'center',
+  },
+  infoBox: {
+    backgroundColor: '#8fbac1',
+    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.4)',
+  },
+  routeTitle: {
+    color: '#10324A',
+    fontSize: 13,
+    fontWeight: '800',
+    marginBottom: 2,
+    lineHeight: 12
+  },
+  routePath: {
+    color: '#10324A',
+    fontSize: 11,
+    lineHeight: 12
+  },
+  more: { color: '#0B2C6E', fontWeight: '900' },
   airBtn: {
     marginRight: -10,
     alignSelf: 'center',

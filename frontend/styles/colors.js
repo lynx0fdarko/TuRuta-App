@@ -25,7 +25,7 @@ const baseColors = {
   panel:     '#3B517F',               // sheet “Viajes recientes”
   glass:     'rgba(255,255,255,0.10)', // vidrio leve
   cardGlass: 'rgba(255,255,255,0.08)', // tarjetas
-  highlight: '#42506E',               // tarjeta amarilla
+  highlight: '#FFE69B',               // tarjeta amarilla
 
   card:      'rgba(255,255,255,0.10)', // azul vidrio de tarjeta normal
   cardAlt:   'rgba(255,255,255,0.18)', // azul un poco más claro (chips/areas)
